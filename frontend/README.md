@@ -11,8 +11,8 @@
 [ ] coding router module   
 [ ] coding utils width jest  
 [ ] coding table,pagination,search components  
-[ ] coding common styles  
-[ ] use less
+[-] coding common styles  
+[-] use less
 
 ## Project setup
 ```
