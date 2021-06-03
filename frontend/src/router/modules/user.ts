@@ -6,6 +6,7 @@ export default {
     title: '用户管理'
   },
   redirect: 'noredirect',
+  rank: 10,
   component: Layout,
   children: [
     {
