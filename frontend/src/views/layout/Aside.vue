@@ -1,51 +1,72 @@
 <template>
-    <el-aside width="200px">
-    <el-menu style="height:100vh" :default-openeds="['1', '3']">
-      <el-submenu index="1">
-        <template #title><i class="el-icon-message"></i>导航一</template>
-        <el-menu-item-group>
-          <template #title>分组一</template>
-          <el-menu-item index="1-1">选项1</el-menu-item>
-          <el-menu-item index="1-2">选项2</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="分组2">
-          <el-menu-item index="1-3">选项3</el-menu-item>
-        </el-menu-item-group>
-        <el-submenu index="1-4">
-          <template #title>选项4</template>
-          <el-menu-item index="1-4-1">选项4-1</el-menu-item>
-        </el-submenu>
-      </el-submenu>
-      <el-submenu index="2">
-        <template #title><i class="el-icon-menu"></i>导航二</template>
-        <el-menu-item-group>
-          <template #title>分组一</template>
-          <el-menu-item index="2-1">选项1</el-menu-item>
-          <el-menu-item index="2-2">选项2</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="分组2">
-          <el-menu-item index="2-3">选项3</el-menu-item>
-        </el-menu-item-group>
-        <el-submenu index="2-4">
-          <template #title>选项4</template>
-          <el-menu-item index="2-4-1">选项4-1</el-menu-item>
-        </el-submenu>
-      </el-submenu>
-      <el-submenu index="3">
-        <template #title><i class="el-icon-setting"></i>导航三</template>
-        <el-menu-item-group>
-          <template #title>分组一</template>
-          <el-menu-item index="3-1">选项1</el-menu-item>
-          <el-menu-item index="3-2">选项2</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="分组2">
-          <el-menu-item index="3-3">选项3</el-menu-item>
-        </el-menu-item-group>
-        <el-submenu index="3-4">
-          <template #title>选项4</template>
-          <el-menu-item index="3-4-1">选项4-1</el-menu-item>
-        </el-submenu>
+    <el-aside class="el-aside app-aside" width="200px">
+    <div class="aside-top" style="height:60px"></div>
+    <el-menu class="el-menu" style="height:100vh" :default-openeds="defaultOpeneds">
+      <el-submenu v-for="(item,i) in filterRoutes" :index="String(i)" :key="item.name">
+        <template #title><i class="el-icon-message"></i>{{item.meta.title}}</template>
+        <el-menu-item @click="$router.push({name:it.name})" v-for="(it,oi) in item.children" :key="it.name" :index="`${i}-${oi}`">{{it.meta.title}}</el-menu-item>
       </el-submenu>
     </el-menu>
   </el-aside>
 </template>
+<script>
+import { routes } from '@/router/index'
+export default {
+  watch: {
+    $route: {
+      handler (v) {
+        this.defaultOpeneds = ['1']
+      },
+      immediate: true
+    }
+  },
+  computed: {
+    filterRoutes () {
+      const filterRoutes = routes.filter(it => !it.hidden)
+      filterRoutes.forEach(it => {
+        it.children = it.children.filter(item => !item.hidden)
+      })
+      return filterRoutes
+    }
+  },
+  data () {
+    return {
+      defaultOpeneds: []
+    }
+  },
+  created () {
+    console.log(this.filterRoutes)
+  }
+}
+</script>
+<style lang="less" scoped>
+.el-aside,.el-menu{
+    background-color: #001529;
+}
+.el-menu{
+    border-right: none;
+}
+
+</style>
+<style lang="less">
+.app-aside{
+    .el-submenu__title,.el-icon-message,.el-submenu__icon-arrow{
+        color:#fff;
+    }
+    .el-submenu__title:hover{
+        background-color: inherit;
+    }
+    .el-menu-item{
+        background-color: #000c17;
+        color:#303840;
+        color:hsla(0,0%,100%,.65);
+        transition: background-color .3s;
+    }
+    .el-menu-item:hover{
+        color:#fff;
+    }
+    .el-menu-item.active{
+        background-color: #1890ff;
+    }
+}
+</style>

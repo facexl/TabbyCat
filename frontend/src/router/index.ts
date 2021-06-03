@@ -1,16 +1,23 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import commonRoutes from './commonRoutes'
 
 const originModule = require.context('./modules', true, /\.ts/)
 
-const rawRoutes = originModule.keys().map(it => originModule(it).default).sort((a, b) => a.rank - b.rank)
+interface RouteRecordLocal{
+    rank:number,
+    hidden:boolean
+}
 
-console.log(rawRoutes)
+const routes:Array<RouteRecordRaw | RouteRecordLocal> = originModule.keys().map(it => originModule(it).default).sort((a, b) => a.rank - b.rank)
 
-const routes: Array<RouteRecordRaw> = []
 const router = createRouter({
 //   scrollBehavior: () => ({ y: 0 }),
   history: createWebHistory(process.env.BASE_URL),
-  routes: routes.concat(rawRoutes)
+  routes: routes.concat(commonRoutes) as any
 })
+
+export {
+  routes
+}
 
 export default router
