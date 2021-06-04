@@ -34,3 +34,14 @@
 .mb16{
     margin-bottom: 16px;
 }
+.click-expand{
+    position: relative;
+}
+.click-expand::after{
+  position: absolute;
+  content:' ';
+  left:-20px;
+  right:-20px;
+  top:-20px;
+  bottom:-20px;
+}

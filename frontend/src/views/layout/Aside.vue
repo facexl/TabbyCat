@@ -4,7 +4,7 @@
     <el-menu class="el-menu" style="height:100vh" :default-openeds="defaultOpeneds">
       <el-submenu v-for="(item,i) in filterRoutes" :index="String(i)" :key="item.name">
         <template #title><i class="el-icon-message"></i>{{item.meta.title}}</template>
-        <el-menu-item @click="$router.push({name:it.name})" v-for="(it,oi) in item.children" :key="it.name" :index="`${i}-${oi}`">{{it.meta.title}}</el-menu-item>
+        <el-menu-item :class="{active:it.active}" @click="$router.push({name:it.name})" v-for="(it,oi) in item.children" :key="it.name" :index="`${i}-${oi}`">{{it.meta.title}}</el-menu-item>
       </el-submenu>
     </el-menu>
   </el-aside>
@@ -15,7 +15,16 @@ export default {
   watch: {
     $route: {
       handler (v) {
-        this.defaultOpeneds = ['1']
+        this.filterRoutes.forEach((it, i) => {
+          it.children.forEach(item => {
+            if (item.name === v.name) {
+              this.defaultOpeneds = [String(i)]
+              item.active = true
+            } else {
+              item.active = false
+            }
+          })
+        })
       },
       immediate: true
     }
@@ -24,7 +33,10 @@ export default {
     filterRoutes () {
       const filterRoutes = routes.filter(it => !it.hidden)
       filterRoutes.forEach(it => {
-        it.children = it.children.filter(item => !item.hidden)
+        it.children = it.children.filter(item => {
+          item.active = false
+          return !item.hidden
+        })
       })
       return filterRoutes
     }
@@ -33,9 +45,6 @@ export default {
     return {
       defaultOpeneds: []
     }
-  },
-  created () {
-    console.log(this.filterRoutes)
   }
 }
 </script>
@@ -58,7 +67,7 @@ export default {
     }
     .el-menu-item{
         background-color: #000c17;
-        color:#303840;
+        color:#d10a0a;
         color:hsla(0,0%,100%,.65);
         transition: background-color .3s;
     }
