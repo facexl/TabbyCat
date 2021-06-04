@@ -5,7 +5,6 @@ export default {
   meta: {
     title: 'Dashboard'
   },
-  redirect: 'noredirect',
   component: Layout,
   rank: 1,
   children: [

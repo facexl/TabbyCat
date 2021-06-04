@@ -9,7 +9,6 @@ export default [
   {
     name: 'login',
     path: '/login',
-    redirect: 'noredirect',
     rank: 0,
     hidden: true,
     meta: {
