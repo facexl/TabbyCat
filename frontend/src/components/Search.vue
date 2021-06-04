@@ -391,22 +391,6 @@ export default {
       }
       this.$emit('searchCallback', 'reset')
     },
-
-    /* 以下是searchCallback 回调函数， 直接返回type, query */
-    searchCallback (type, query) {
-      const todo = {
-        search: () => {
-          this.query = { ...query }
-          this.getData()
-        },
-        reset: () => {
-          this.query = {}
-          this.current = 1
-          this.getData()
-        }
-      }
-      todo[type]()
-    },
     selectChange (val, key) {
       this.$emit('selectChange', val, key)
     },
@@ -432,7 +416,6 @@ export default {
   background: #fff;
   display: flex;
   justify-content: space-between;
-  //   align-items: center;
   align-items: flex-start;
   .search-form-item {
     display: inline-block;
