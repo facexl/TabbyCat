@@ -15,6 +15,14 @@ export default {
         title: '用户列表'
       },
       component: () => import('@/views/user/UserList.vue')
+    },
+    {
+      path: 'userEdit',
+      name: 'userEdit',
+      meta: {
+        title: '用户编辑'
+      },
+      component: () => import('@/views/user/UserEdit.vue')
     }
   ]
 }

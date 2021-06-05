@@ -9,7 +9,7 @@
       class="card-box login-form"
     >
       <h3 class="title">
-        智能云监控平台
+        狸花猫
       </h3>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">

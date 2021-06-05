@@ -1,6 +1,8 @@
 <template>
     <el-aside class="el-aside app-aside" width="200px">
-    <div class="aside-top" style="height:60px"></div>
+    <div class="aside-top flex-center" style="height:60px">
+        狸花猫
+    </div>
     <el-menu class="el-menu" style="height:100vh" :default-openeds="defaultOpeneds">
       <el-submenu v-for="(item,i) in filterRoutes" :index="String(i)" :key="item.name">
         <template #title><i class="el-icon-message"></i>{{item.meta.title}}</template>
@@ -55,7 +57,9 @@ export default {
 .el-menu{
     border-right: none;
 }
-
+.aside-top{
+    color:magenta;
+}
 </style>
 <style lang="less">
 .app-aside{

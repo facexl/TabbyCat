@@ -4,15 +4,23 @@
         <i class="el-icon-setting" style="margin-right: 15px"></i>
         <template #dropdown>
           <el-dropdown-menu>
-              <el-dropdown-item>查看</el-dropdown-item>
-              <el-dropdown-item>新增</el-dropdown-item>
-              <el-dropdown-item>删除</el-dropdown-item>
+              <el-dropdown-item>编辑</el-dropdown-item>
+              <el-dropdown-item>退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
       <span class="name">肖浪</span>
     </el-header>
 </template>
+<script>
+export default {
+  methods: {
+    userOperate (key) {
+      debugger
+    }
+  }
+}
+</script>
 <style lang="less" scoped>
 .header{
     display: flex;
