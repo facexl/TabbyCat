@@ -14,7 +14,7 @@
 [-] coding common styles  
 [-] use less  
 ~~[ ] coding bread crumbs~~  
-[ ] route checkout animate  
+[-] route checkout animate  
 [ ] user CRUD  
 [ ] project CRUD  
 [-] search component  
