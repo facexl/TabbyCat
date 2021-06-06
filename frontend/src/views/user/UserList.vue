@@ -25,19 +25,23 @@
           <el-table-column label="用户类型" align="center" prop="typeName"></el-table-column>
           <el-table-column label="用户类型" align="center" prop="typeName"></el-table-column>
         </el-table>
+        <UserAdd v-model:show="showUserAdd"></UserAdd>
     </div>
 </template>
 <script>
 import Search from '@/components/Search'
+import UserAdd from './UserAdd.vue'
 export default {
   components: {
-    Search
+    Search,
+    UserAdd
   },
   data () {
     return {
       searchOPtions: [{ type: 'input', key: 'key' }],
       loading: false,
-      tableData: [{}, {}]
+      tableData: [{}, {}],
+      showUserAdd: false
     }
   }
 }

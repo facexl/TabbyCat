@@ -1,7 +1,10 @@
 <template>
-    <div>
-        <el-row type="flex" justify="center">
-            <el-card style="width:500px">
+    <el-dialog
+        title="提示"
+        v-model:visible="dialogVisible"
+        width="30%"
+        :before-close="handleClose"
+    >
                 <el-form ref="form" :model="form" label-width="80px">
                     <el-form-item label="用户名">
                         <el-input></el-input>
@@ -13,18 +16,19 @@
                         <el-input></el-input>
                     </el-form-item>
                 </el-form>
-                <el-row type="flex" justify="center">
-                    <el-button type="primary" class="button">提交</el-button>
-                </el-row>
-            </el-card>
-        </el-row>
-    </div>
+    </el-dialog>
 </template>
 <script>
 export default {
-  date () {
+  data () {
     return {
+      dialogVisible: false,
       form: {}
+    }
+  },
+  methods: {
+    handleClose () {
+      console.log('closed')
     }
   }
 }
