@@ -13,6 +13,7 @@
 </template>
 <script>
 import { routes } from '@/router/index'
+import cloneDeep from 'lodash.clonedeep'
 export default {
   watch: {
     $route: {
@@ -33,7 +34,8 @@ export default {
   },
   computed: {
     filterRoutes () {
-      const filterRoutes = routes.filter(it => !it.hidden)
+      const newRoutes = cloneDeep(routes)
+      const filterRoutes = newRoutes.filter(it => !it.hidden)
       filterRoutes.forEach(it => {
         it.children = it.children.filter(item => {
           item.active = false

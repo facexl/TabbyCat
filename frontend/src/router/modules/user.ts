@@ -19,6 +19,7 @@ export default {
     {
       path: 'userEdit',
       name: 'userEdit',
+      hidden: true,
       meta: {
         title: '用户编辑'
       },
