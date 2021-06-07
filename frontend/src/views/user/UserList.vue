@@ -2,7 +2,7 @@
     <div>
         <Search :searchOPtions="searchOPtions"></Search>
         <div class="app-table-header mb8">
-            <el-button type="primary" size="small">添加</el-button>
+            <el-button @click="addUser" type="primary" size="small">添加</el-button>
         </div>
         <el-table
           element-loading-spinner="el-icon-loading"
@@ -42,6 +42,11 @@ export default {
       loading: false,
       tableData: [{}, {}],
       showUserAdd: false
+    }
+  },
+  methods: {
+    addUser () {
+      this.showUserAdd = true
     }
   }
 }

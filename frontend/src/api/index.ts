@@ -1,17 +1,25 @@
-import { $axios, AxiosConfig } from './axiosSet'
-// import { Api } from '@/Global/api/@types/api'
+import $axios, { AxiosConfig } from './axiosSet'
 
 // console.time()
 
 const originModule = require.context('./modules', true, /\.ts/)
 
-const $api:{} = {}
+interface apiFn{
+    [key:string]:()=>Promise<unknown>
+}
+interface apiObj{
+    [key:string]:{
+        [key:string]:apiFn
+    }
+}
 
-originModule.keys().forEach((it) => {
+const $api:apiObj = {}
+
+originModule.keys().forEach((it:string) => {
   const o = originModule(it).default
   Object.keys(o).forEach(key => {
     o[`_${key}`] = o[key]
-    o[key] = function (params:{} = {}, config:AxiosConfig = {}, otherConfig:{} = {}) {
+    o[key] = function (params:unknown = {}, config:AxiosConfig = {}, otherConfig:unknown = {}) {
       return $axios(o[`_${key}`], params, config, otherConfig)
     }
   })

@@ -11,11 +11,11 @@
       <h3 class="title">
         狸花猫
       </h3>
-      <el-form-item prop="username">
+      <el-form-item prop="name">
         <span class="svg-container svg-container_login">
             <i class="el-icon-user-solid"></i>
         </span>
-        <el-input name="username" type="text" v-model="loginForm.username" placeholder="请输入用户名称" />
+        <el-input name="username" type="text" v-model="loginForm.name" placeholder="请输入用户名称" />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container svg-container_login">
@@ -43,9 +43,10 @@
 
 <script>
 // import { mapActions } from "vuex";
+import { local } from '@/utils'
 export default {
   data () {
-    const validateUsername = (rule, value, callback) => {
+    const validatename = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请输入用户名'))
         return
@@ -61,12 +62,12 @@ export default {
     }
     return {
       loginForm: {
-        username: '',
+        name: '',
         password: ''
       },
       loginRules: {
-        username: [
-          { required: true, trigger: 'blur', validator: validateUsername }
+        name: [
+          { required: true, trigger: 'blur', validator: validatename }
         ],
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
@@ -75,18 +76,17 @@ export default {
   },
   methods: {
     handleLogin () {
-      this.$refs.loginForm.validate(async valid => {
+      this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          try {
-            await this.Login(this.loginForm)
-            this.$nextTick(_ => {
-              this.$router.push({ name: 'Index' })
-              this.loading = false
+          this.$api.user.login(this.loginForm).then(res => {
+            local.set('_t', res.data.token)
+            this.$router.push({
+              name: 'workspace'
             })
-          } catch (err) {
+          }).catch(() => {
             this.loading = false
-          }
+          })
         }
       })
     }

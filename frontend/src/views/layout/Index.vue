@@ -4,9 +4,11 @@
     <el-container direction="vertical">
         <Header />
         <el-main>
-            <transition name="slide-fade" mode="out-in">
-                <router-view />
-            </transition>
+                <router-view v-slot="{ Component }">
+                    <transition name="slide-fade" mode="out-in">
+                        <component :is="Component" />
+                    </transition>
+                </router-view>
         </el-main>
     </el-container>
 </el-container>
@@ -26,7 +28,7 @@ export default {
   transition: all 0.3s ease-out;
 }
 .slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+  transition: all 0.1s cubic-bezier(1, 0.5, 0.8, 1);
 }
 
 .slide-fade-enter-from,
