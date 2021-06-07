@@ -1,0 +1,36 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js",
+    "prod": "pm2 start app.js",
+    "create:model": "npx sequelize-cli model:generate --name xx --attributes firstName:string,lastName:string,email:string",
+    "create:table": "NODE_ENV=production sequelize-cli db:migrate",
+    "create:table:drop": "npx sequelize-cli db:migrate:undo",
+    "create:seed": "npx sequelize-cli seed:generate --name"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/router": "^9.3.1",
+    "axios": "^0.21.0",
+    "bcrypt": "^5.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-logger": "^3.2.1",
+    "koa-session": "^6.0.0",
+    "md5": "^2.3.0",
+    "mysql2": "^2.1.0",
+    "pg": "^8.3.0",
+    "sequelize": "^6.3.3"
+  },
+  "devDependencies": {
+    "pm2": "^4.5.0",
+    "sequelize-cli": "^6.2.0",
+    "sqlite3": "^5.0.0"
+  }
+}
