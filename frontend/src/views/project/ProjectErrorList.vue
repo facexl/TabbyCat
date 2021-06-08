@@ -20,8 +20,8 @@
         </el-table>
         <div class="app-table-pager mt8">
             <el-pagination
-                @size-change="_=>{handleSizeChange(_,getErrList)}"
-                @current-change="_=>{handleCurrentChange(_,getErrList)}"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
                 :current-page="page"
                 :page-sizes="[20, 50, 100, 200]"
                 :page-size="pageSize"
@@ -44,10 +44,7 @@ export default {
   },
   data () {
     return {
-      searchOPtions: [{ type: 'input', key: 'key' }],
-      //   loading: false,
-      tableData: [],
-      total: 0
+      searchOPtions: [{ type: 'input', key: 'key' }]
     }
   },
   setup () {
@@ -59,14 +56,14 @@ export default {
       }).then(res => {
         loading.value = false
         tableData.value = res.data.list
-        // this.total = res.data.count
+        total.value = res.data.count
       }).catch((err) => {
         console.error(err)
         loading.value = false
       })
     }
-    const { page, pageSize, handleSizeChange, handleCurrentChange } = usePagination()
-    const { onSearch, query } = useSearch()
+    const { page, pageSize, handleSizeChange, handleCurrentChange, total } = usePagination(getErrList)
+    const { onSearch, query } = useSearch(getErrList)
     const { loading, tableData } = useTable()
     onMounted(getErrList)
     return {
@@ -76,7 +73,9 @@ export default {
       handleCurrentChange,
       onSearch,
       query,
-      loading
+      loading,
+      total,
+      tableData
     }
   }
 }
