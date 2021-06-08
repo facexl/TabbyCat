@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search :searchOPtions="searchOPtions" @searchCallback="onSearch"></Search>
+        <Search :searchOPtions="searchOPtions" @searchCallback="(type,query)=>{onSearch(type,query,getList)}"></Search>
         <el-table
           element-loading-spinner="el-icon-loading"
           :highlight-current-row="true"
@@ -19,28 +19,52 @@
           <el-table-column label="链接" align="center" prop="url"></el-table-column>
         </el-table>
         <div class="app-table-pager mt8">
-            <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="page"
-                :page-sizes="[20, 50, 100, 200]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total">
-            </el-pagination>
+            <Pagination
+                :page="page"
+                :pageSize="pageSize"
+                :total="total"
+                @handleSizeChange="_=>{handleSizeChange(_,getList)}"
+                @handleCurrentChange="_=>{handleCurrentChange(_,getList)}"
+            />
         </div>
     </div>
 </template>
 <script>
 import Search from '@/components/Search'
+import Pagination from '@/components/Pagination'
 import usePagination from '@/composables/usePagination'
 import useSearch from '@/composables/useSearch'
-import useTable from '@/composables/useTable'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import $api from '@/api/index'
+const useGetList = (page, pageSize, query) => {
+  const loading = ref(false)
+  const tableData = ref([])
+  const total = ref(0)
+  const getList = () => {
+    loading.value = true
+    $api.errors.errList({
+      page: page.value,
+      pageSize: pageSize.value,
+      ...query.value
+    }).then(res => {
+      loading.value = false
+      tableData.value = res.data.list
+      total.value = res.data.count
+    }).catch((err) => {
+      console.error(err)
+      loading.value = false
+    })
+  }
+  return {
+    loading,
+    tableData,
+    total,
+    getList
+  }
+}
 export default {
   components: {
-    Search
+    Search, Pagination
   },
   data () {
     return {
@@ -48,24 +72,10 @@ export default {
     }
   },
   setup () {
-    const getErrList = () => {
-      loading.value = true
-      $api.errors.errList({
-        page: page.value,
-        pageSize: pageSize.value
-      }).then(res => {
-        loading.value = false
-        tableData.value = res.data.list
-        total.value = res.data.count
-      }).catch((err) => {
-        console.error(err)
-        loading.value = false
-      })
-    }
-    const { page, pageSize, handleSizeChange, handleCurrentChange, total } = usePagination(getErrList)
-    const { onSearch, query } = useSearch(getErrList)
-    const { loading, tableData } = useTable()
-    onMounted(getErrList)
+    const { page, pageSize, handleSizeChange, handleCurrentChange } = usePagination()
+    const { onSearch, query } = useSearch()
+    const { loading, tableData, total, getList } = useGetList(page, pageSize, query)
+    onMounted(getList)
     return {
       page,
       pageSize,
@@ -75,7 +85,8 @@ export default {
       query,
       loading,
       total,
-      tableData
+      tableData,
+      getList
     }
   }
 }

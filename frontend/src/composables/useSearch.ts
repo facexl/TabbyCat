@@ -1,7 +1,7 @@
 import { ref } from 'vue'
-export default function (getList:()=>unknown) {
+export default function () {
   const query = ref({})
-  const onSearch = (type:string, q:any) => {
+  const onSearch = (type:string, q:any, getList:()=>unknown) => {
     if (type === 'search') {
       query.value = q
     } else {
