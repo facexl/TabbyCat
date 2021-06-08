@@ -1,14 +1,14 @@
 <template>
-  <el-container style="min-height: 100vh">
+  <el-container style="min-height: 100vh;padding-left:200px">
     <Aside />
     <el-container direction="vertical">
         <Header />
         <el-main>
-                <router-view v-slot="{ Component }">
-                    <transition name="slide-fade" mode="out-in">
-                        <component :is="Component" />
-                    </transition>
-                </router-view>
+            <router-view v-slot="{ Component }">
+                <transition name="slide-fade" mode="out-in">
+                    <component :is="Component" />
+                </transition>
+            </router-view>
         </el-main>
     </el-container>
 </el-container>

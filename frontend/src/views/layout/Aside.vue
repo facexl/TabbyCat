@@ -65,6 +65,9 @@ export default {
 </style>
 <style lang="less">
 .app-aside{
+    position: fixed;
+    top:0;
+    left:0;
     .el-submenu__title,.el-icon-message,.el-submenu__icon-arrow{
         color:#fff;
     }

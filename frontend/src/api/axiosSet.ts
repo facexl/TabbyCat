@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { local } from '@/utils/index'
 import { ElMessage } from 'element-plus'
+import Router from '@/router/index'
 
 const axiosInstance = axios.create({
   timeout: 55000
@@ -39,9 +40,9 @@ export default function (apiKey: string, params:any = {}, config: AxiosConfig = 
     ...config
   }
   if (otherConfig.headers) {
-    otherConfig.headers.Authorization = `Bearer ${local.get('_t')}`
+    otherConfig.headers.Authorization = local.get('_t')
   } else {
-    otherConfig.headers = { Authorization: `Bearer ${local.get('_t')}` }
+    otherConfig.headers = { Authorization: local.get('_t') }
   }
   const apiUrlArr = apiKey.split(' ')
   return axiosInstance({
@@ -53,6 +54,14 @@ export default function (apiKey: string, params:any = {}, config: AxiosConfig = 
   }).then(res => {
     if (apiConfig.thirdApi) {
       return res.data
+    }
+    if (res.data.code === 10010) {
+      apiConfig.auth && Router.replace({
+        name: 'login',
+        query: {
+          redirect: location.pathname
+        }
+      })
     }
     if (res.data.code === 999) {
       apiConfig.errorKill && ElMessage.error(res.data.message)

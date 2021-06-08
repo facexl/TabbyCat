@@ -10,7 +10,7 @@ function generate (obj:typeof localStorage | typeof sessionStorage) {
       try {
         value = JSON.parse(value as any)
       } catch (e) {
-        console.log('解析错误:', e)
+        console.log('storage json解析错误')
       }
       return value
     },

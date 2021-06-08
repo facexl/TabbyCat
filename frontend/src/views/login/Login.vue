@@ -81,9 +81,15 @@ export default {
           this.loading = true
           this.$api.user.login(this.loginForm).then(res => {
             local.set('_t', res.data.token)
-            this.$router.push({
-              name: 'workspace'
-            })
+            if (this.$route.query.redirect) {
+              this.$router.push({
+                path: this.$route.query.redirect
+              })
+            } else {
+              this.$router.push({
+                name: 'workspace'
+              })
+            }
           }).catch(() => {
             this.loading = false
           })
