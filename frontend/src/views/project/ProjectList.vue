@@ -15,9 +15,10 @@
           style="width: 100%"
         >
           <el-table-column label="ID"  align="center" prop="id"></el-table-column>
-          <el-table-column label="项目名称" align="center" prop="name"></el-table-column>
-          <el-table-column label="项目token" align="center" prop="name"></el-table-column>
-          <el-table-column label="创建时间" align="center" prop="platform"></el-table-column>
+          <el-table-column label="名称" align="center" prop="name"></el-table-column>
+          <el-table-column label="简介" align="center" prop="name"></el-table-column>
+          <el-table-column label="token" align="center" prop="token"></el-table-column>
+          <el-table-column label="创建时间" align="center" prop="create_time"></el-table-column>
         </el-table>
         <div class="app-table-pager mt8">
             <Pagination
