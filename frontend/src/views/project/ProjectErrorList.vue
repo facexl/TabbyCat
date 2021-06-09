@@ -34,59 +34,49 @@ import Search from '@/components/Search'
 import Pagination from '@/components/Pagination'
 import usePagination from '@/composables/usePagination'
 import useSearch from '@/composables/useSearch'
-import { onMounted, ref } from 'vue'
 import $api from '@/api/index'
-const useGetList = (page, pageSize, query) => {
-  const loading = ref(false)
-  const tableData = ref([])
-  const total = ref(0)
-  const getList = () => {
-    loading.value = true
-    $api.errors.errList({
-      page: page.value,
-      pageSize: pageSize.value,
-      ...query.value
-    }).then(res => {
-      loading.value = false
-      tableData.value = res.data.list
-      total.value = res.data.count
-    }).catch((err) => {
-      console.error(err)
-      loading.value = false
-    })
-  }
-  return {
-    loading,
-    tableData,
-    total,
-    getList
-  }
-}
 export default {
   components: {
     Search, Pagination
   },
   data () {
     return {
-      searchOPtions: [{ type: 'input', key: 'key' }]
+      searchOPtions: [{ type: 'input', key: 'key' }],
+      loading: false,
+      tableData: [],
+      total: 0
     }
   },
   setup () {
     const { page, pageSize, handleSizeChange, handleCurrentChange } = usePagination()
     const { onSearch, query } = useSearch()
-    const { loading, tableData, total, getList } = useGetList(page, pageSize, query)
-    onMounted(getList)
     return {
       page,
       pageSize,
       handleSizeChange,
       handleCurrentChange,
       onSearch,
-      query,
-      loading,
-      total,
-      tableData,
-      getList
+      query
+    }
+  },
+  created () {
+    this.getList()
+  },
+  methods: {
+    getList () {
+      this.loading = true
+      $api.errors.errList({
+        page: this.page,
+        pageSize: this.pageSize,
+        ...this.query
+      }).then(res => {
+        this.loading = false
+        this.tableData = res.data.list
+        this.total = res.data.count
+      }).catch((err) => {
+        console.error(err)
+        this.loading = false
+      })
     }
   }
 }
