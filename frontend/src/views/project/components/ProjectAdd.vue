@@ -6,10 +6,10 @@
         :before-close="handleClose"
     >
         <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="项目名称" required>
+            <el-form-item label="项目名称" :rules="simpleRule" prop="name">
                 <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="项目简介" required>
+            <el-form-item label="项目简介" :rules="simpleRule" prop="profile">
                 <el-input v-model="form.profile" type="textarea"></el-input>
             </el-form-item>
         </el-form>
@@ -48,7 +48,9 @@ export default {
       form: {
         name: '',
         profile: ''
-      }
+      },
+      simpleRule: { required: true, message: '必填项', trigger: 'change' }
+
     }
   },
   methods: {
@@ -56,7 +58,11 @@ export default {
       this.dialogVisible = false
     },
     submit () {
-    //   this.$refs.form
+      this.$refs.form.validate(val => {
+        if (val) {
+
+        }
+      })
     }
   }
 }
