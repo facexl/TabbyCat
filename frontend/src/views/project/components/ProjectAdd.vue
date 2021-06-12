@@ -50,7 +50,6 @@ export default {
         profile: ''
       },
       simpleRule: { required: true, message: '必填项', trigger: 'change' }
-
     }
   },
   methods: {
@@ -60,7 +59,9 @@ export default {
     submit () {
       this.$refs.form.validate(val => {
         if (val) {
-
+          this.$api.project.save(this.form).then(res => {
+            debugger
+          })
         }
       })
     }
