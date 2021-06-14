@@ -6,14 +6,19 @@
         :before-close="handleClose"
     >
         <el-form :model="form" label-width="80px">
-            <el-form-item label="用户名">
-                <el-input></el-input>
+            <el-form-item label="用户名" prop="name" :rules="simpleRule">
+                <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="密码">
-                <el-input></el-input>
+            <el-form-item label="密码" prop="password" :rules="simpleRule">
+                <el-input type="password" autocomplete="new-password" v-model="form.password"></el-input>
             </el-form-item>
-            <el-form-item label="身份">
-                <el-input></el-input>
+             <el-form-item label="确认密码" prop="sure_password" :rules="simpleRule">
+                <el-input type="password" autocomplete="new-password" v-model="form.sure_password"></el-input>
+            </el-form-item>
+            <el-form-item label="身份" prop="role" :rules="simpleRule">
+                <el-select clearable placeholder="请选择" v-model="form.role">
+                    <el-option v-for="item in roles" :key="item.type" :label="item.name" :value="item.type"></el-option>
+                </el-select>
             </el-form-item>
         </el-form>
         <template #footer>
@@ -43,8 +48,20 @@ export default {
   data () {
     return {
       dialogVisible: false,
-      form: {}
+      form: {
+        role: '',
+        name: '',
+        password: '',
+        sure_password: ''
+      },
+      roles: [],
+      simpleRule: { required: true, message: '必填项', trigger: 'change' }
     }
+  },
+  created () {
+    this.$api.config.roles().then(res => {
+      this.roles = res.data
+    })
   },
   methods: {
     handleClose () {
