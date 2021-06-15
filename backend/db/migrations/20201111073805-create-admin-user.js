@@ -21,6 +21,10 @@ module.exports = {
       password_digest:{
         type: Sequelize.STRING
       },
+      status:{
+        type:Sequelize.INTEGER,
+        allowNull: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

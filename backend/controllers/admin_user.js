@@ -42,7 +42,7 @@ class adminUserController extends baseController{
     }
     signIn = async (ctx,next)=>{
         console.log(ctx.request.body,ctx.state)
-        const { name,password,role } = ctx.request.body
+        const { name,role,password } = ctx.request.body
         await model.admin_user.create({
              password,
              name,
