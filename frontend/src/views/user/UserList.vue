@@ -17,6 +17,13 @@
           <el-table-column label="用户ID"  align="center" prop="id"></el-table-column>
           <el-table-column label="用户昵称" align="center" prop="name"></el-table-column>
           <el-table-column label="用户类型" align="center" prop="role"></el-table-column>
+          <el-table-column label="是否启用" align="center" prop="status">
+              <template v-slot="scope">
+                  <div>
+                      <el-switch @change="statusChange(scope.row)" v-model="scope.row.status" :active-value="1" :inactive-value="10"></el-switch>
+                  </div>
+              </template>
+          </el-table-column>
           <el-table-column label="创建时间" align="center" prop="createdAt"></el-table-column>
           <el-table-column label="更新时间" align="center" prop="updatedAt"></el-table-column>
         </el-table>
@@ -48,7 +55,7 @@ export default {
     return {
       searchOPtions: [{ type: 'input', key: 'key' }],
       loading: false,
-      tableData: [{}, {}],
+      tableData: [],
       showUserAdd: false
     }
   },
@@ -70,6 +77,9 @@ export default {
   methods: {
     addUser () {
       this.showUserAdd = true
+    },
+    statusChange (row) {
+      console.log(row)
     },
     getList () {
       this.loading = true
