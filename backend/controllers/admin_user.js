@@ -52,9 +52,6 @@ class adminUserController extends baseController{
         this.$success(ctx,{})
         await next()
      }
-     constantList=async (ctx,next)=>{
-
-     }
      list=async (ctx,next)=>{
         const { pageSize,page } = ctx.request.query
         const res = await model.admin_user.findAndCountAll(
