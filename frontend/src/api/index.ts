@@ -4,13 +4,16 @@ import $axios, { AxiosConfig } from './axiosSet'
 
 const originModule = require.context('./modules', true, /\.ts/)
 
+interface response{
+    code:number,
+    data:any
+}
+
 interface apiFn{
-    [key:string]:()=>Promise<unknown>
+    [key:string]:()=>Promise<response>
 }
 interface apiObj{
-    [key:string]:{
-        [key:string]:apiFn
-    }
+    [key:string]:apiFn
 }
 
 const $api:apiObj = {}

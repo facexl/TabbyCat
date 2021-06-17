@@ -67,6 +67,7 @@ export default function (apiKey: string, params:any = {}, config: AxiosConfig = 
       apiConfig.errorKill && ElMessage.error(res.data.message)
     }
     if (res.data.code === 0) {
+      apiConfig.success && ElMessage.success(apiConfig.successText)
       return res.data
     }
     throw res.data

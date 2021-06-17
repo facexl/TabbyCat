@@ -79,7 +79,15 @@ export default {
       this.showUserAdd = true
     },
     statusChange (row) {
-      console.log(row)
+      if (row.id) {
+        this.$api.user.setStatus({
+          id: row.id,
+          status: row.status
+        }, { success: true }).catch(err => {
+          console.log(err)
+          row.status = row.status === 1 ? 10 : 1
+        })
+      }
     },
     getList () {
       this.loading = true

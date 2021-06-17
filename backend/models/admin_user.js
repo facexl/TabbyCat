@@ -52,6 +52,10 @@ module.exports = (sequelize, DataTypes) => {
           len: [6, 20]
         }
       },
+      status:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       role: {
         type: DataTypes.STRING,
         allowNull: false,

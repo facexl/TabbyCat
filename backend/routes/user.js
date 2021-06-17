@@ -9,5 +9,6 @@ router.post('/login', adminUserController.login);
 router.get('/info',adminUserController.info)
 router.post('/signIn',adminUserController.signIn)
 router.get('/list',adminUserController.list)
+router.post('/setStatus',adminUserController.setStatus)
 
 module.exports = router

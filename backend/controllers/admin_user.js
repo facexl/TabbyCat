@@ -41,7 +41,6 @@ class adminUserController extends baseController{
         await next();
     }
     signIn = async (ctx,next)=>{
-        console.log(ctx.request.body,ctx.state)
         const { name,role,password } = ctx.request.body
         await model.admin_user.create({
              password,
@@ -67,6 +66,16 @@ class adminUserController extends baseController{
             list:res.rows,
             count:res.count
         })
+        await next()
+     }
+     setStatus=async (ctx,next)=>{
+        const { id,status } = ctx.request.body
+        await model.admin_user.update({ status }, {
+            where: {
+              id
+            }
+          });
+          this.$success(ctx)
         await next()
      }
 }

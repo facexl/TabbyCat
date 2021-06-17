@@ -18,12 +18,14 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      status:{
+        type: Sequelize.INTEGER, // 字段数据类型
+        allowNull: false, // 不允许为空
+        defaultValue: 1,  // 默认,没有为0
+        comment: '状态', // 字段描述
+      },
       password_digest:{
         type: Sequelize.STRING
-      },
-      status:{
-        type:Sequelize.INTEGER,
-        allowNull: false
       },
       createdAt: {
         allowNull: false,
