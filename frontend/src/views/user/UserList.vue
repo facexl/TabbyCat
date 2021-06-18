@@ -56,7 +56,8 @@ export default {
       searchOPtions: [{ type: 'input', key: 'key' }],
       loading: false,
       tableData: [],
-      showUserAdd: false
+      showUserAdd: false,
+      total: 0
     }
   },
   setup () {

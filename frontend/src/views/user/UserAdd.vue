@@ -38,6 +38,7 @@ export default {
       default: false
     }
   },
+  emits: ['fresh'],
   watch: {
     show (v) {
       this.dialogVisible = v
