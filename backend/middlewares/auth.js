@@ -8,6 +8,9 @@ module.exports = function(options={whitelist:[]}){
         if(!whitelist.includes(ctx.originalUrl.split('?')[0])){
             try{
                 const jwtInfo = jwt.verify(ctx.headers.authorization,jwtSecret)
+                if(jwtInfo.status!==1){
+                    throw 'DISABLED'
+                }
                 ctx.state.jwtInfo = jwtInfo
             }catch(err){
                 throw 'NO_LOGIN'

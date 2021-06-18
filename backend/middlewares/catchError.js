@@ -38,6 +38,10 @@ function normalizeError(err){
         errMsg = '未登录'
         code = 10010
     }
+    if(err==='DISABLED'){
+        errMsg = '账户已被禁用'
+        code = 10010
+    }
     return {
         code,
         errMsg

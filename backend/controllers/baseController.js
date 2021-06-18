@@ -14,9 +14,14 @@ class baseController{
             message
         }
     }
+    /**
+     * jwt加密
+     * @param {*} user 
+     * @returns 
+     */
     $token(user){
         return jwt.sign(
-            {id:user.id},
+            {id:user.id,status:user.status},
             jwtSecret,
             {expiresIn:jwtExpiresIn}
         )

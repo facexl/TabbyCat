@@ -12,6 +12,10 @@ class adminUserController extends baseController{
             return
         }
         if(user.authenticate(password)){
+            if(user.status!==1){
+                this.$fail(ctx,'账户已被禁用')
+                return
+            }
             const token = this.$token(user)
             const res = {
                 ...user.toJSON(),
