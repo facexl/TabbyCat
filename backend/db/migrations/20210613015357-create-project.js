@@ -17,8 +17,11 @@ module.exports = {
       token:{
         type: Sequelize.STRING
       },
-      ban:{
-        type: Sequelize.INTEGER
+      status:{
+        type: Sequelize.INTEGER, // 字段数据类型
+        allowNull: false, // 不允许为空
+        defaultValue: 1,  // 默认,没有为0
+        comment: '状态', // 字段描述
       },
       createdAt: {
         allowNull: false,

@@ -1,5 +1,5 @@
 export default {
-  projectList: 'get /v1/project/getList',
-  save: 'post /v1/project/save',
-  del: 'post /v1/project/del'
+  projectList: 'get /v1/project/r',
+  save: 'post /v1/project/c',
+  del: 'post /v1/project/d'
 }

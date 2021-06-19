@@ -33,11 +33,11 @@ export default {
   setup (props, { emit }) {
     const dialogVisible = ref(false)
     const { show } = toRefs(props)
-    watch(show, _ => {
-      dialogVisible.value = _
+    watch(show, v => {
+      dialogVisible.value = v
     })
-    watch(dialogVisible, _ => {
-      emit('update:show', _)
+    watch(dialogVisible, v => {
+      emit('update:show', v)
     })
     return {
       dialogVisible

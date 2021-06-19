@@ -67,7 +67,7 @@ export default {
   methods: {
     getList () {
       this.loading = true
-      $api.errors.errList({
+      $api.errors.projectList({
         page: this.page,
         pageSize: this.pageSize,
         ...this.query

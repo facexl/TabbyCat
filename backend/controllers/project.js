@@ -6,9 +6,11 @@ class projectController extends baseController{
         const formData = ctx.request.body
         console.log(formData)
         const { name,profile } = formData
-        // await model.project.create({
-        //     name:
-        // })
+        await model.project.create({
+            name,
+            profile
+        })
+        this.$success(ctx)
     }
     R = async (ctx,next)=>{
         const { pageSize,page,platform=0 } = ctx.request.query

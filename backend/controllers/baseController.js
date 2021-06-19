@@ -15,7 +15,7 @@ class baseController{
         }
     }
     /**
-     * jwt加密
+     * jwt生成登录token
      * @param {*} user 
      * @returns 
      */
