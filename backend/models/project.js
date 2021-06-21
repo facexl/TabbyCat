@@ -14,7 +14,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   project.init({
-    name: DataTypes.STRING
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique:true,
+        comment:'项目名称',
+        validate: {
+            notEmpty: true
+        },
+    },
+    profile:DataTypes.STRING,
+    token:DataTypes.STRING,
+    status:DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'project',
