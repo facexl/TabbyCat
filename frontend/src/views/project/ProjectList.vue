@@ -29,7 +29,7 @@
                 @handleCurrentChange="_=>{handleCurrentChange(_,getList)}"
             />
         </div>
-        <ProjectAdd v-model:show="showProjectAdd"></ProjectAdd>
+        <ProjectAdd @fresh="getList" v-model:show="showProjectAdd"></ProjectAdd>
     </div>
 </template>
 <script>

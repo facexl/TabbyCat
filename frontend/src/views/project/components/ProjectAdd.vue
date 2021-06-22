@@ -60,7 +60,8 @@ export default {
       this.$refs.form.validate(val => {
         if (val) {
           this.$api.project.save(this.form).then(res => {
-            debugger
+            this.dialogVisible = false
+            this.$emit('fresh')
           })
         }
       })
