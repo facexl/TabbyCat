@@ -19,6 +19,14 @@
           <el-table-column label="简介" align="center" prop="profile"></el-table-column>
           <el-table-column label="token" align="center" prop="token"></el-table-column>
           <el-table-column label="创建时间" align="center" prop="create_time"></el-table-column>
+          <el-table-column label="操作" align="center" fixed="right">
+              <template #default="scope">
+                  <div>
+                    <el-button @click="edit" type="text">编辑</el-button>
+                    <el-button @click="del(scope.row.id)" type="text">删除</el-button>
+                  </div>
+              </template>
+          </el-table-column>
         </el-table>
         <div class="app-table-pager mt8">
             <Pagination
@@ -82,6 +90,16 @@ export default {
         console.error(err)
         this.loading = false
       })
+    },
+    del (id) {
+      $api.project.del({
+        id
+      }).then(() => {
+        this.getList()
+      })
+    },
+    edit (id) {
+      debugger
     }
   }
 }

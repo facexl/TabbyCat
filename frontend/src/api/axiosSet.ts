@@ -75,7 +75,7 @@ export default function (apiKey: string, params:any = {}, config: AxiosConfig = 
     if (err.code) {
       switch (err.code) {
         case 9999:
-          ElMessage.error(err.message ? err.message.name ? err.message.name : err.message : '系统异常')
+          ElMessage.error(typeof err.message === 'string' ? err.message : err.message.name ? err.message.name : '系统异常')
           break
       }
     }
