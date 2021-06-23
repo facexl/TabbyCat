@@ -1,5 +1,7 @@
 const model  = require('../models')
 const baseController = require('./baseController')
+const md5 = require('md5');
+const { md5ProjectTokenSalt } = require('../config/config')
 
 class projectController extends baseController{
     C = async (ctx,next)=>{
@@ -10,17 +12,24 @@ class projectController extends baseController{
             name,
             profile
         })
+        let project = await model.project.findOne(
+            { 
+                where: { name }
+            }
+        );
+        await model.project.update({ token }, {
+            where: {
+              id:project.id
+            }
+        });
         this.$success(ctx)
     }
     R = async (ctx,next)=>{
-        const { pageSize,page,platform=0 } = ctx.request.query
-        const res = await model.client_error.findAndCountAll(
+        const { pageSize,page } = ctx.request.query
+        const res = await model.project.findAndCountAll(
             { 
                 limit: +pageSize,
                 offset: +(page-1)*pageSize,
-                where: {
-                    platform
-                },
                 order:[
                     ['id', 'DESC']
                 ],
