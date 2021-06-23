@@ -64,10 +64,13 @@ export default {
       query
     }
   },
+  created () {
+    this.getList()
+  },
   methods: {
     getList () {
       this.loading = true
-      $api.errors.projectList({
+      $api.project.projectList({
         page: this.page,
         pageSize: this.pageSize,
         ...this.query
