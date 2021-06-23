@@ -7,5 +7,6 @@ const router = Router({
 
 router.post('/c',projectController.C)
 router.get('/r',projectController.R)
+router.post('/d',projectController.D)
 
 module.exports = router
