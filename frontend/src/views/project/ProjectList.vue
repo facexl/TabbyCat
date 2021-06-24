@@ -22,7 +22,7 @@
           <el-table-column label="操作" align="center" fixed="right">
               <template #default="scope">
                   <div>
-                    <el-button @click="edit" type="text">编辑</el-button>
+                    <el-button @click="edit(scope.row)" type="text">编辑</el-button>
                     <el-button @click="del(scope.row.id)" type="text">删除</el-button>
                   </div>
               </template>
@@ -37,7 +37,7 @@
                 @handleCurrentChange="_=>{handleCurrentChange(_,getList)}"
             />
         </div>
-        <ProjectAdd @fresh="getList" v-model:show="showProjectAdd"></ProjectAdd>
+        <ProjectAdd :projectInfo="editingProjectInfo" @fresh="getList" v-model:show="showProjectAdd"></ProjectAdd>
     </div>
 </template>
 <script>
@@ -57,7 +57,8 @@ export default {
       loading: false,
       tableData: [],
       total: 0,
-      showProjectAdd: false
+      showProjectAdd: false,
+      editingProjectInfo: {}
     }
   },
   setup () {
@@ -98,8 +99,9 @@ export default {
         this.getList()
       })
     },
-    edit (id) {
-      debugger
+    edit (row) {
+      this.editingProjectInfo = row
+      this.showProjectAdd = true
     }
   }
 }

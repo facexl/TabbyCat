@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        title="添加项目"
+        :title="`${projectInfo.id?'编辑':'添加'}`"
         v-model="dialogVisible"
         width="30%"
         :before-close="handleClose"
@@ -28,7 +28,8 @@ export default {
     show: {
       type: Boolean,
       default: false
-    }
+    },
+    projectInfo: {}
   },
   setup (props, { emit }) {
     const dialogVisible = ref(false)
