@@ -48,24 +48,43 @@ import usePagination from '@/composables/usePagination'
 import useSearch from '@/composables/useSearch'
 import $api from '@/api/index'
 import ProjectAdd from './components/ProjectAdd.vue'
+import { reactive, toRefs, onMounted } from 'vue'
 export default {
   components: {
     Search, Pagination, ProjectAdd
   },
-  data () {
-    return {
+  setup () {
+    const state = reactive({
       searchOPtions: [{ type: 'input', key: 'key' }],
       loading: false,
       tableData: [],
       total: 0,
       showProjectAdd: false,
       editingProjectInfo: {}
+    })
+    onMounted(() => {
+      getList()
+    })
+    const getList = () => {
+      state.loading = true
+      $api.project.projectList({
+        page: page.value,
+        pageSize: pageSize.value,
+        ...query.value
+      }).then(res => {
+        state.loading = false
+        state.tableData = res.data.list
+        state.total = res.data.count
+      }).catch((err) => {
+        console.error(err)
+        state.loading = false
+      })
     }
-  },
-  setup () {
-    const { page, pageSize, handleSizeChange, handleCurrentChange } = usePagination()
-    const { onSearch, query } = useSearch()
+    const { page, pageSize, handleSizeChange, handleCurrentChange } = usePagination(getList)
+    const { onSearch, query } = useSearch(getList)
     return {
+      ...toRefs(state),
+      getList,
       page,
       pageSize,
       handleSizeChange,
@@ -74,25 +93,7 @@ export default {
       query
     }
   },
-  created () {
-    this.getList()
-  },
   methods: {
-    getList () {
-      this.loading = true
-      $api.project.projectList({
-        page: this.page,
-        pageSize: this.pageSize,
-        ...this.query
-      }).then(res => {
-        this.loading = false
-        this.tableData = res.data.list
-        this.total = res.data.count
-      }).catch((err) => {
-        console.error(err)
-        this.loading = false
-      })
-    },
     del (id) {
       $api.project.del({
         id
