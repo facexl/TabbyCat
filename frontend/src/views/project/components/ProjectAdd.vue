@@ -44,9 +44,12 @@ export default {
     watch(show, v => {
       state.dialogVisible = v
     })
-    watch(state.dialogVisible, v => {
-      emit('update:show', v)
-    })
+    watch(
+      () => state.dialogVisible,
+      v => {
+        emit('update:show', v)
+      }
+    )
     const handleClose = () => {
       state.dialogVisible = false
     }
