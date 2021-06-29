@@ -22,7 +22,7 @@
     </el-dialog>
 </template>
 <script>
-import { ref, toRefs, watch } from 'vue'
+import { ref, toRefs, watch, reactive } from 'vue'
 export default {
   props: {
     show: {
@@ -32,40 +32,38 @@ export default {
     projectInfo: {}
   },
   setup (props, { emit }) {
-    const dialogVisible = ref(false)
-    const { show } = toRefs(props)
-    watch(show, v => {
-      dialogVisible.value = v
-    })
-    watch(dialogVisible, v => {
-      emit('update:show', v)
-    })
-    return {
-      dialogVisible
-    }
-  },
-  data () {
-    return {
+    const state = reactive({
+      dialogVisible: false,
       form: {
         name: '',
         profile: ''
       },
       simpleRule: { required: true, message: '必填项', trigger: 'change' }
+    })
+    const { show } = toRefs(props)
+    watch(show, v => {
+      state.dialogVisible = v
+    })
+    watch(state.dialogVisible, v => {
+      emit('update:show', v)
+    })
+    const handleClose = () => {
+      state.dialogVisible = false
     }
-  },
-  methods: {
-    handleClose () {
-      this.dialogVisible = false
-    },
-    submit () {
-      this.$refs.form.validate(val => {
-        if (val) {
-          this.$api.project.save(this.form).then(res => {
-            this.dialogVisible = false
-            this.$emit('fresh')
-          })
-        }
-      })
+    const submit = () => {
+    //   this.$refs.form.validate(val => {
+    //     if (val) {
+    //       this.$api.project.save(this.form).then(res => {
+    //         this.dialogVisible = false
+    //         this.$emit('fresh')
+    //       })
+    //     }
+    //   })
+    }
+    return {
+      ...toRefs(state),
+      handleClose,
+      submit
     }
   }
 }

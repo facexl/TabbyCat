@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search :searchOPtions="searchOPtions" @searchCallback="(type,query)=>{onSearch(type,query,getList)}"></Search>
+        <Search :searchOPtions="searchOPtions" @searchCallback="onSearch"></Search>
         <div class="app-table-header mb8">
             <el-button @click="showProjectAdd = true" type="primary" size="small">添加</el-button>
         </div>
@@ -34,8 +34,8 @@
                 :page="page"
                 :pageSize="pageSize"
                 :total="total"
-                @handleSizeChange="_=>{handleSizeChange(_,getList)}"
-                @handleCurrentChange="_=>{handleCurrentChange(_,getList)}"
+                @handleSizeChange="handleSizeChange"
+                @handleCurrentChange="handleCurrentChange"
             />
         </div>
         <ProjectAdd :projectInfo="editingProjectInfo" @fresh="getList" v-model:show="showProjectAdd"></ProjectAdd>
@@ -80,6 +80,17 @@ export default {
         state.loading = false
       })
     }
+    const del = (id) => {
+      $api.project.del({
+        id
+      }).then(() => {
+        getList()
+      })
+    }
+    const edit = (row) => {
+      state.editingProjectInfo = row
+      state.showProjectAdd = true
+    }
     const { page, pageSize, handleSizeChange, handleCurrentChange } = usePagination(getList)
     const { onSearch, query } = useSearch(getList)
     return {
@@ -90,20 +101,9 @@ export default {
       handleSizeChange,
       handleCurrentChange,
       onSearch,
-      query
-    }
-  },
-  methods: {
-    del (id) {
-      $api.project.del({
-        id
-      }).then(() => {
-        this.getList()
-      })
-    },
-    edit (row) {
-      this.editingProjectInfo = row
-      this.showProjectAdd = true
+      query,
+      del,
+      edit
     }
   }
 }
