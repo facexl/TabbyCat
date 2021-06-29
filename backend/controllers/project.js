@@ -16,6 +16,7 @@ class projectController extends baseController{
                 where: { name }
             }
         );
+        const token = md5(`${md5ProjectTokenSalt}${project.id}`)
         await model.project.update({ token }, {
             where: {
               id:project.id
