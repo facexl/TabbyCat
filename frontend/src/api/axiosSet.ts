@@ -79,6 +79,7 @@ export default function (apiKey: string, params:any = {}, config: AxiosConfig = 
           break
       }
     }
+    console.log(err)
     throw err
   })
 }

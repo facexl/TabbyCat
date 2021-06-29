@@ -2,7 +2,7 @@
     <div>
         <Search :searchOPtions="searchOPtions" @searchCallback="onSearch"></Search>
         <div class="app-table-header mb8">
-            <el-button @click="showProjectAdd = true" type="primary" size="small">添加</el-button>
+            <el-button @click="showProjectAdd = true;editingProjectInfo={}" type="primary" size="small">添加</el-button>
         </div>
         <el-table
           element-loading-spinner="el-icon-loading"
@@ -18,7 +18,7 @@
           <el-table-column label="名称" align="center" prop="name"></el-table-column>
           <el-table-column label="简介" align="center" prop="profile"></el-table-column>
           <el-table-column label="token" align="center" prop="token"></el-table-column>
-          <el-table-column label="创建时间" align="center" prop="create_time"></el-table-column>
+          <el-table-column label="创建时间" align="center" prop="createdAt"></el-table-column>
           <el-table-column label="操作" align="center" fixed="right">
               <template #default="scope">
                   <div>

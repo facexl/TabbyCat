@@ -52,15 +52,28 @@ export default {
         emit('update:show', v)
       }
     )
+    watch(
+      () => props.projectInfo,
+      v => {
+        Object.keys(state.form).forEach(key => {
+          state.form[key] = props.projectInfo[key]
+        })
+      }
+    )
     const handleClose = () => {
       state.dialogVisible = false
     }
     const submit = () => {
       root.value.validate(val => {
         if (val) {
-          $api.project.save(state.form).then(res => {
+          $api.project.save({
+            ...state.form,
+            id: props.projectInfo.id ? props.projectInfo.id : 0
+          }).then(res => {
             state.dialogVisible = false
             emit('fresh')
+          }).catch(err => {
+            console.log(err)
           })
         }
       })
