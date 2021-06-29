@@ -6,7 +6,11 @@ const { md5ProjectTokenSalt } = require('../config/config')
 class projectController extends baseController{
     C = async (ctx,next)=>{
         const formData = ctx.request.body
-        const { name,profile } = formData
+        const { name,profile,id } = formData
+        if(id){
+            this.U(ctx,next)
+            return
+        }
         await model.project.create({
             name,
             profile
@@ -41,7 +45,15 @@ class projectController extends baseController{
         })
     }
     U = async (ctx,next)=>{
-
+        const formData = ctx.request.body
+        console.log(213245675,formData)
+        const { id } = formData
+        await model.project.update({ ...formData }, {
+            where: {
+              id
+            }
+        });
+        this.$success(ctx)
     }
     D = async (ctx,next)=>{
         const formData = ctx.request.body
