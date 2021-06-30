@@ -1,5 +1,6 @@
 const model  = require('../models')
 const baseController = require('./baseController')
+const { commonStatus }  = require('../constant')
 class adminUserController extends baseController{
     login = async(ctx,next)=>{
         const { name,password } = ctx.request.body
@@ -46,11 +47,19 @@ class adminUserController extends baseController{
     }
     signIn = async (ctx,next)=>{
         const { name,role,password } = ctx.request.body
+        console.log({
+            password,
+            name,
+            password_digest:model.admin_user.getPasswordHash(password),
+            role,
+            status:commonStatus.active
+       })
         await model.admin_user.create({
              password,
              name,
              password_digest:model.admin_user.getPasswordHash(password),
-             role
+             role,
+             status:commonStatus.active
         })
         this.$success(ctx,{})
         await next()
