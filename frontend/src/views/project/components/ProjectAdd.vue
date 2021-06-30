@@ -32,6 +32,7 @@ export default {
     },
     projectInfo: {}
   },
+  emits: ['fresh'],
   setup (props, { emit }) {
     const root = ref(null)
     const state = reactive({

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search :searchOPtions="searchOPtions" @searchCallback="(type,query)=>{onSearch(type,query,getList)}"></Search>
+        <Search :searchOPtions="searchOPtions" @searchCallback="onSearch"></Search>
         <div class="app-table-header mb8">
             <el-button @click="addUser" type="primary" size="small">添加</el-button>
         </div>
@@ -20,7 +20,7 @@
           <el-table-column label="是否启用" align="center" prop="status">
               <template v-slot="scope">
                   <div>
-                      <el-switch @change="statusChange(scope.row)" v-model="scope.row.status" :active-value="1" :inactive-value="10"></el-switch>
+                      <el-switch @change="statusChange(scope.row)" v-model="scope.row.status" :active-value="10" :inactive-value="0"></el-switch>
                   </div>
               </template>
           </el-table-column>
@@ -32,8 +32,8 @@
                 :page="page"
                 :pageSize="pageSize"
                 :total="total"
-                @handleSizeChange="_=>{handleSizeChange(_,getList)}"
-                @handleCurrentChange="_=>{handleCurrentChange(_,getList)}"
+                @handleSizeChange="handleSizeChange"
+                @handleCurrentChange="handleCurrentChange"
             />
         </div>
         <UserAdd @fresh="getList" v-model:show="showUserAdd"></UserAdd>
@@ -45,65 +45,67 @@ import UserAdd from './UserAdd.vue'
 import Pagination from '@/components/Pagination'
 import usePagination from '@/composables/usePagination'
 import useSearch from '@/composables/useSearch'
+import { reactive, toRefs, onMounted } from 'vue'
+import $api from '@/api/index'
 export default {
   components: {
     Search,
     UserAdd,
     Pagination
   },
-  data () {
-    return {
+  setup () {
+    const state = reactive({
       searchOPtions: [{ type: 'input', key: 'key' }],
       loading: false,
       tableData: [],
       showUserAdd: false,
       total: 0
+    })
+    onMounted(() => {
+      getList()
+    })
+    const getList = () => {
+      state.loading = true
+      $api.user.list({
+        page: page.value,
+        pageSize: pageSize.value,
+        ...query.value
+      }).then(res => {
+        state.loading = false
+        state.tableData = res.data.list
+        state.total = res.data.count
+      }).catch((err) => {
+        console.error(err)
+        state.loading = false
+      })
     }
-  },
-  setup () {
-    const { page, pageSize, handleSizeChange, handleCurrentChange } = usePagination()
-    const { onSearch, query } = useSearch()
+    const { page, pageSize, handleSizeChange, handleCurrentChange } = usePagination(getList)
+    const { onSearch, query } = useSearch(getList)
+    const addUser = () => {
+      state.showUserAdd = true
+    }
+    const statusChange = (row) => {
+      if (row.id) {
+        $api.user.setStatus({
+          id: row.id,
+          status: row.status
+        }, { success: true }).catch(err => {
+          console.log(err)
+          row.status = row.status === 0 ? 10 : 0
+        })
+      }
+    }
     return {
+      ...toRefs(state),
       page,
       pageSize,
       handleSizeChange,
       handleCurrentChange,
       onSearch,
-      query
-    }
-  },
-  created () {
-    this.getList()
-  },
-  methods: {
-    addUser () {
-      this.showUserAdd = true
-    },
-    statusChange (row) {
-      if (row.id) {
-        this.$api.user.setStatus({
-          id: row.id,
-          status: row.status
-        }, { success: true }).catch(err => {
-          console.log(err)
-          row.status = row.status === 1 ? 10 : 1
-        })
-      }
-    },
-    getList () {
-      this.loading = true
-      this.$api.user.list({
-        page: this.page,
-        pageSize: this.pageSize,
-        ...this.query
-      }).then(res => {
-        this.loading = false
-        this.tableData = res.data.list
-        this.total = res.data.count
-      }).catch((err) => {
-        console.error(err)
-        this.loading = false
-      })
+      query,
+      getList,
+      addUser,
+      statusChange
     }
   }
 }
