@@ -5,7 +5,7 @@
         width="30%"
         :before-close="handleClose"
     >
-        <el-form :model="form" ref="form" label-width="80px">
+        <el-form :model="form" ref="root" label-width="80px">
             <el-form-item label="用户名" prop="name" :rules="simpleRule">
                 <el-input v-model="form.name"></el-input>
             </el-form-item>
@@ -31,6 +31,9 @@
 </template>
 <script>
 import useRoles from '@/composables/constant/useRoles'
+import { reactive, toRefs, onMounted, ref } from 'vue'
+import $api from '@/api/index'
+
 export default {
   props: {
     show: {
@@ -47,24 +50,20 @@ export default {
       this.$emit('update:show', v)
     }
   },
-  setup () {
+  setup (props, { emit }) {
+    const root = ref(null)
     const { roles, setRoles } = useRoles()
     setRoles()
-    return {
-      roles
-    }
-  },
-  data () {
-    var validatePass = (rule, value, callback) => {
+    const validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
-      } else if (value !== this.form.password) {
+      } else if (value !== state.form.password) {
         callback(new Error('两次输入密码不一致!'))
       } else {
         callback()
       }
     }
-    return {
+    const state = reactive({
       dialogVisible: false,
       form: {
         role: '',
@@ -74,21 +73,26 @@ export default {
       },
       simpleRule: { required: true, message: '必填项', trigger: 'change' },
       surePasswordRule: { required: true, validator: validatePass, trigger: 'blur' }
+    })
+    const handleClose = () => {
+      state.dialogVisible = false
     }
-  },
-  methods: {
-    handleClose () {
-      this.dialogVisible = false
-    },
-    submit () {
-      this.$refs.form.validate(val => {
+    const submit = () => {
+      root.value.validate(val => {
         console.log(val)
         if (!val) return
-        this.$api.user.signIn(this.form).then(res => {
-          this.dialogVisible = false
-          this.$emit('fresh')
+        $api.user.signIn(state.form).then(res => {
+          state.dialogVisible = false
+          emit('fresh')
         })
       })
+    }
+    return {
+      ...toRefs(state),
+      roles,
+      handleClose,
+      submit,
+      root
     }
   }
 }
