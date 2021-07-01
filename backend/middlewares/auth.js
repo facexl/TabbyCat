@@ -1,6 +1,7 @@
 
 const jwt = require('jsonwebtoken')
 const { jwtSecret } = require('../config/config')
+const { commonStatus }  = require('../constant')
 
 module.exports = function(options={whitelist:[]}){
     return async function(ctx,next){
@@ -8,7 +9,7 @@ module.exports = function(options={whitelist:[]}){
         if(!whitelist.includes(ctx.originalUrl.split('?')[0])){
             try{
                 const jwtInfo = jwt.verify(ctx.headers.authorization,jwtSecret)
-                if(jwtInfo.status!==1){
+                if(jwtInfo.status!==commonStatus.disable){
                     throw 'DISABLED'
                 }
                 ctx.state.jwtInfo = jwtInfo
