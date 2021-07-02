@@ -26,6 +26,14 @@
           </el-table-column>
           <el-table-column label="创建时间" align="center" prop="createdAt"></el-table-column>
           <el-table-column label="更新时间" align="center" prop="updatedAt"></el-table-column>
+            <el-table-column label="操作" align="center" fixed="right">
+              <template #default="scope">
+                  <div>
+                    <el-button @click="edit(scope.row)" type="text">编辑</el-button>
+                    <el-button @click="del(scope.row.id)" type="text">删除</el-button>
+                  </div>
+              </template>
+          </el-table-column>
         </el-table>
         <div class="app-table-pager mt8">
             <Pagination
@@ -95,6 +103,17 @@ export default {
         })
       }
     }
+    const edit = (row) => {
+      debugger
+    }
+    const del = id => {
+      $api.user.setStatus({
+        id,
+        status: 999
+      }, { success: true }).then(() => {
+        getList()
+      })
+    }
     return {
       ...toRefs(state),
       page,
@@ -105,7 +124,8 @@ export default {
       query,
       getList,
       addUser,
-      statusChange
+      statusChange,
+      del
     }
   }
 }
