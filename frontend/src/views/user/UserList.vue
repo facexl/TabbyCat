@@ -44,7 +44,7 @@
                 @handleCurrentChange="handleCurrentChange"
             />
         </div>
-        <UserAdd @fresh="getList" v-model:show="showUserAdd"></UserAdd>
+        <UserAdd @fresh="getList" :userInfo="userInfo" v-model:show="showUserAdd"></UserAdd>
     </div>
 </template>
 <script>
@@ -67,7 +67,8 @@ export default {
       loading: false,
       tableData: [],
       showUserAdd: false,
-      total: 0
+      total: 0,
+      userInfo: {}
     })
     onMounted(() => {
       getList()
@@ -91,6 +92,7 @@ export default {
     const { onSearch, query } = useSearch(getList)
     const addUser = () => {
       state.showUserAdd = true
+      state.userInfo = {}
     }
     const statusChange = (row) => {
       if (row.id) {
@@ -104,7 +106,8 @@ export default {
       }
     }
     const edit = (row) => {
-      debugger
+      state.showUserAdd = true
+      state.userInfo = row
     }
     const del = id => {
       $api.user.setStatus({
@@ -125,7 +128,8 @@ export default {
       getList,
       addUser,
       statusChange,
-      del
+      del,
+      edit
     }
   }
 }
