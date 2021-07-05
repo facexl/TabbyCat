@@ -13,7 +13,7 @@ class adminUserController extends baseController{
             return
         }
         if(user.authenticate(password)){
-            if(user.status!==1){
+            if(user.status!==commonStatus.active){
                 this.$fail(ctx,'账户已被禁用')
                 return
             }
@@ -84,6 +84,16 @@ class adminUserController extends baseController{
      setStatus=async (ctx,next)=>{
         const { id,status } = ctx.request.body
         await model.admin_user.update({ status }, {
+            where: {
+              id
+            }
+          });
+          this.$success(ctx)
+        await next()
+     }
+     update=async (ctx,next)=>{
+        const { id,name,role } = ctx.request.body
+        await model.admin_user.update({ name,role }, {
             where: {
               id
             }
