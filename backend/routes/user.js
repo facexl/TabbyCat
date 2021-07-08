@@ -11,5 +11,6 @@ router.post('/signIn',adminUserController.signIn)
 router.get('/list',adminUserController.list)
 router.post('/setStatus',adminUserController.setStatus)
 router.post('/update',adminUserController.update)
+router.post('/changePassword',adminUserController.changePassword)
 
 module.exports = router

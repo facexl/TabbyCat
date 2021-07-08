@@ -101,5 +101,27 @@ class adminUserController extends baseController{
           this.$success(ctx)
         await next()
      }
+     changePassword=async(ctx,next)=>{
+        const { name,oldPassword,newPassword } = ctx.request.body
+        const { id } = ctx.state.jwtInfo
+        const user = await model.admin_user.findOne({ 
+            where: { id }
+        })
+        if(!user.authenticate(oldPassword)){
+            this.$fail(ctx,'旧密码错误')
+            return
+        }
+        await model.admin_user.update({ 
+            password:newPassword,
+            name,
+            password_digest:model.admin_user.getPasswordHash(newPassword), }, {
+            where: {
+              id
+            }
+        });
+        this.$success(ctx)
+        await next()
+       
+     }
 }
 module.exports = new adminUserController()
