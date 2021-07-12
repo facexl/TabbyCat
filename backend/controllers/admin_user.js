@@ -1,6 +1,7 @@
 const model  = require('../models')
 const baseController = require('./baseController')
 const { commonStatus }  = require('../constant')
+const { Op } = require("sequelize");
 class adminUserController extends baseController{
     login = async(ctx,next)=>{
         const { name,password } = ctx.request.body
@@ -73,6 +74,11 @@ class adminUserController extends baseController{
                 order:[
                     ['id', 'DESC']
                 ],
+                where:{
+                    status:{
+                        [Op.not]:commonStatus.delete
+                    }
+                }
             }
         )
         this.$success(ctx,{

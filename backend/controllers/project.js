@@ -2,6 +2,8 @@ const model  = require('../models')
 const baseController = require('./baseController')
 const md5 = require('md5');
 const { md5ProjectTokenSalt } = require('../config/config')
+const { Op } = require("sequelize");
+const { commonStatus }  = require('../constant')
 
 class projectController extends baseController{
     C = async (ctx,next)=>{
@@ -37,6 +39,11 @@ class projectController extends baseController{
                 order:[
                     ['id', 'DESC']
                 ],
+                where:{
+                    status:{
+                        [Op.not]:commonStatus.delete
+                    }
+                }
             }
         )
         this.$success(ctx,{
@@ -58,7 +65,7 @@ class projectController extends baseController{
     D = async (ctx,next)=>{
         const formData = ctx.request.body
         const { id } = formData
-        await model.project.update({ status:0 }, {
+        await model.project.update({ status:commonStatus.delete }, {
             where: {
               id
             }
