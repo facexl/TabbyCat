@@ -1,25 +1,41 @@
 <template>
-  <el-container style="min-height: 100vh;padding-left:200px">
-    <Aside />
-    <el-container direction="vertical">
-        <Header />
-        <el-main>
-            <router-view v-slot="{ Component }">
-                <transition name="slide-fade" mode="out-in">
-                    <component :is="Component" />
-                </transition>
-            </router-view>
-        </el-main>
+    <el-container v-show="showApp" style="min-height: 100vh;padding-left:200px">
+        <Aside />
+        <el-container direction="vertical">
+            <Header />
+            <el-main>
+                <router-view v-slot="{ Component }">
+                    <transition name="slide-fade" mode="out-in">
+                        <component :is="Component" />
+                    </transition>
+                </router-view>
+            </el-main>
+        </el-container>
     </el-container>
-</el-container>
 </template>
 <script>
 import Aside from '@/views/layout/Aside'
 import Header from '@/views/layout/Header'
+import { ref, reactive, toRefs, computed } from 'vue'
+import { useStore } from 'vuex'
 export default {
   components: {
     Aside,
     Header
+  },
+  setup () {
+    const store = useStore()
+    const state = reactive({
+      showApp: false
+    })
+    const userInfo = store.getters['user/userInfo']
+    if (userInfo.id) {
+
+    }
+    console.log(userInfo)
+    return {
+      ...toRefs(state)
+    }
   }
 }
 </script>
