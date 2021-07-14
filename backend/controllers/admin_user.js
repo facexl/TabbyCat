@@ -31,10 +31,10 @@ class adminUserController extends baseController{
         await next();
     }
     info = async (ctx,next)=>{
-        const { uid } = ctx.request.query
+        const { id } = ctx.state.jwtInfo
         let user = await model.admin_user.findOne(
             { 
-                where: { id:uid },
+                where: { id },
                 attributes: { exclude: ['password_digest'] }
             }
         );
