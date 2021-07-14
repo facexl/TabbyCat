@@ -1,29 +1,31 @@
+import $api from '@/api'
+
+interface UserInfo{
+    id:number
+}
 interface UserState{
-    userInfo:{
-        id:number
-    }
+    userInfo:UserInfo
 }
 export default {
   namespaced: true,
   state: {
-    userInfo: {
-      id: 1134
-    }
+    userInfo: {}
   },
   getters: {
     userInfo (state:UserState) {
-      console.log('trigger')
       return state.userInfo
     }
   },
   actions: {
-    getUserInfo ({ state, commit }, product) {
-      debugger
+    async getUserInfo ({ commit, state }:unknown) {
+      const { data } = await $api.user.info()
+      commit('setUserInfo', data)
+      return data
     }
   },
   mutations: {
-    setUserInfo (state:UserState) {
-      debugger
+    setUserInfo (state:UserState, data:UserInfo) {
+      state.userInfo = data
     }
   }
-}
+} as any

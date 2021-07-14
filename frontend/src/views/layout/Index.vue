@@ -1,5 +1,5 @@
 <template>
-    <el-container v-show="showApp" style="min-height: 100vh;padding-left:200px">
+    <el-container v-if="showApp" style="min-height: 100vh;padding-left:200px">
         <Aside />
         <el-container direction="vertical">
             <Header />
@@ -18,6 +18,7 @@ import Aside from '@/views/layout/Aside'
 import Header from '@/views/layout/Header'
 import { ref, reactive, toRefs, computed } from 'vue'
 import { useStore } from 'vuex'
+import { ElLoading } from 'element-plus'
 export default {
   components: {
     Aside,
@@ -28,11 +29,23 @@ export default {
     const state = reactive({
       showApp: false
     })
+    const loading = ElLoading.service({
+      lock: true,
+      text: 'Loading'
+    //   spinner: 'el-icon-loading',
+    //   background: 'rgba(0, 0, 0, 0.7)'
+    })
+    console.log('trigger app init setup')
     const userInfo = store.getters['user/userInfo']
-    if (userInfo.id) {
-
+    if (!userInfo.id) {
+      store.dispatch('user/getUserInfo').then(res => {
+        state.showApp = true
+        loading.close()
+      }).catch(err => {
+        console.log(err)
+        loading.close()
+      })
     }
-    console.log(userInfo)
     return {
       ...toRefs(state)
     }

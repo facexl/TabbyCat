@@ -4,5 +4,6 @@ export default {
   signIn: 'post /v1/user/signIn',
   setStatus: 'post /v1/user/setStatus',
   update: 'post /v1/user/update',
-  changePassword: 'post /v1/user/changePassword'
+  changePassword: 'post /v1/user/changePassword',
+  info: 'get /v1/user/info'
 }

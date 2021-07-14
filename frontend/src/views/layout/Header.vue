@@ -16,12 +16,14 @@
                 </el-dropdown-menu>
                 </template>
             </el-dropdown>
-            <span class="name">肖浪</span>
+            <span class="name">{{userInfo.name}}</span>
         </div>
     </el-header>
 </template>
 <script>
-import { routes } from '@/router/index'
+import Router, { routes } from '@/router/index'
+import { useStore } from 'vuex'
+import { local, session } from '@/utils/index'
 export default {
   watch: {
     $route: {
@@ -44,6 +46,13 @@ export default {
       child: ''
     }
   },
+  setup () {
+    const store = useStore()
+    const userInfo = store.getters['user/userInfo']
+    return {
+      userInfo
+    }
+  },
   methods: {
     userOperate (key) {
       switch (key) {
@@ -51,6 +60,11 @@ export default {
           this.$router.push({
             name: 'userEdit'
           })
+          break
+        case 'logout':
+          local.clear()
+          session.clear()
+          window.location.reload()
           break
         default:
           console.log('未定义操作')
