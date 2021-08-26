@@ -10,6 +10,8 @@ import $api from '@/api/index'
 
 const app = createApp(App)
 
+console.log($api)
+
 app.use(store).use(router).use(ElementPlus).mount('#app')
 
 app.config.globalProperties.$api = $api

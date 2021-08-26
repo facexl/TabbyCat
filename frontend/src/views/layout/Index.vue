@@ -14,8 +14,8 @@
     </el-container>
 </template>
 <script>
-import Aside from '@/views/layout/Aside'
-import Header from '@/views/layout/Header'
+import Aside from '@/views/layout/Aside.vue'
+import Header from '@/views/layout/Header.vue'
 import { ref, reactive, toRefs, computed } from 'vue'
 import { useStore } from 'vuex'
 import { ElLoading } from 'element-plus'

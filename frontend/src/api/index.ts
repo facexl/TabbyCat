@@ -2,7 +2,9 @@ import $axios, { AxiosConfig } from './axiosSet'
 
 // console.time()
 
-const originModule = require.context('./modules', true, /\.ts/)
+// const originModule = require.context('./modules', true, /\.ts/) // webpack
+
+const originModule = import.meta.globEager('./modules/*.ts')
 
 interface response{
     code:number,
@@ -18,15 +20,15 @@ interface apiObj{
 
 const $api:apiObj = {}
 
-originModule.keys().forEach((it:string) => {
-  const o = originModule(it).default
+Object.keys(originModule).forEach((it:string) => {
+  const o = originModule[it].default
   Object.keys(o).forEach(key => {
     o[`_${key}`] = o[key]
     o[key] = function (params:unknown = {}, config:AxiosConfig = {}, otherConfig:unknown = {}) {
       return $axios(o[`_${key}`], params, config, otherConfig)
     }
   })
-  $api[it.replace(/\.\/(.+)\.ts$/, '$1')] = originModule(it).default
+  $api[it.replace(/\.\/modules\/(.+)\.ts$/, '$1')] = originModule[it].default
 })
 
 // console.timeEnd()
