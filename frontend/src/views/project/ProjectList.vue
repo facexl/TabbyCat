@@ -42,8 +42,8 @@
     </div>
 </template>
 <script>
-import Search from '@/components/Search'
-import Pagination from '@/components/Pagination'
+import Search from '@/components/Search.vue'
+import Pagination from '@/components/Pagination.vue'
 import usePagination from '@/composables/usePagination'
 import useSearch from '@/composables/useSearch'
 import $api from '@/api/index'

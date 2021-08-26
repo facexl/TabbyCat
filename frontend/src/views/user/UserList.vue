@@ -48,9 +48,9 @@
     </div>
 </template>
 <script>
-import Search from '@/components/Search'
+import Search from '@/components/Search.vue'
 import UserAdd from './UserAdd.vue'
-import Pagination from '@/components/Pagination'
+import Pagination from '@/components/Pagination.vue'
 import usePagination from '@/composables/usePagination'
 import useSearch from '@/composables/useSearch'
 import { reactive, toRefs, onMounted } from 'vue'
