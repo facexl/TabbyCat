@@ -24,7 +24,7 @@
                   <div>
                     <el-button @click="$router.push({name:'projectErrorList',query:{token:scope.row.token}})" type="text">查看</el-button>
                     <el-button @click="edit(scope.row)" type="text">编辑</el-button>
-                    <el-button @click="del(scope.row.id)" type="text">删除</el-button>
+                    <el-button @click="del(scope.row.id)" class="danger-color" type="text">删除</el-button>
                   </div>
               </template>
           </el-table-column>
