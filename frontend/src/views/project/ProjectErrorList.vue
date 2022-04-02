@@ -36,6 +36,7 @@ import usePagination from '@/composables/usePagination'
 import useSearch from '@/composables/useSearch'
 import $api from '@/api/index'
 import { reactive, toRefs, onMounted } from 'vue'
+import { keyer } from '@/utils/index'
 export default {
   components: {
     Search, Pagination
@@ -65,6 +66,7 @@ export default {
     const { page, pageSize, handleSizeChange, handleCurrentChange } = usePagination(getList)
     const { onSearch, query } = useSearch(getList)
     onMounted(() => {
+        console.log(keyer.key)
       getList()
     })
     return {

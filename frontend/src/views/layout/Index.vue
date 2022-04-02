@@ -25,27 +25,25 @@ export default {
     Header
   },
   setup () {
-    const store = useStore()
+    // const store = useStore()
     const state = reactive({
-      showApp: false
+      showApp: true
     })
-    const loading = ElLoading.service({
-      lock: true,
-      text: 'Loading'
-    //   spinner: 'el-icon-loading',
-    //   background: 'rgba(0, 0, 0, 0.7)'
-    })
-    console.log('trigger app init setup')
-    const userInfo = store.getters['user/userInfo']
-    if (!userInfo.id) {
-      store.dispatch('user/getUserInfo').then(res => {
-        state.showApp = true
-        loading.close()
-      }).catch(err => {
-        console.log(err)
-        loading.close()
-      })
-    }
+    // const loading = ElLoading.service({
+    //   lock: true,
+    //   text: 'Loading'
+    // })
+    // console.log('trigger app init setup')
+    // const userInfo = store.getters['user/userInfo']
+    // if (!userInfo.id) {
+    //   store.dispatch('user/getUserInfo').then(res => {
+    //     state.showApp = true
+    //     loading.close()
+    //   }).catch(err => {
+    //     console.log(err)
+    //     loading.close()
+    //   })
+    // }
     return {
       ...toRefs(state)
     }

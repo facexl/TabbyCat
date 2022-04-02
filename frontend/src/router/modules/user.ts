@@ -8,22 +8,22 @@ export default {
   rank: 10,
   component: Layout,
   children: [
-    {
-      path: 'userList',
-      name: 'userList',
-      meta: {
-        title: '用户列表'
-      },
-      component: () => import('@/views/user/UserList.vue')
-    },
-    {
-      path: 'userEdit',
-      name: 'userEdit',
-      hidden: true,
-      meta: {
-        title: '用户编辑'
-      },
-      component: () => import('@/views/user/UserEdit.vue')
-    }
+    // {
+    //   path: 'userList',
+    //   name: 'userList',
+    //   meta: {
+    //     title: '用户列表'
+    //   },
+    //   component: () => import('@/views/user/UserList.vue')
+    // },
+    // {
+    //   path: 'userEdit',
+    //   name: 'userEdit',
+    //   hidden: true,
+    //   meta: {
+    //     title: '用户编辑'
+    //   },
+    //   component: () => import('@/views/user/UserEdit.vue')
+    // }
   ]
 }

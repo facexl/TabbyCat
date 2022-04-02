@@ -55,6 +55,7 @@ import usePagination from '@/composables/usePagination'
 import useSearch from '@/composables/useSearch'
 import { reactive, toRefs, onMounted } from 'vue'
 import $api from '@/api/index'
+import { keyer } from '@/utils/index'
 export default {
   components: {
     Search,
@@ -68,9 +69,10 @@ export default {
       tableData: [],
       showUserAdd: false,
       total: 0,
-      userInfo: {}
+      userInfo: {},
     })
     onMounted(() => {
+        console.log(keyer.key)
       getList()
     })
     const getList = () => {

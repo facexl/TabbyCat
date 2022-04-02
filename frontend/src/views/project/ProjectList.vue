@@ -49,6 +49,7 @@ import useSearch from '@/composables/useSearch'
 import $api from '@/api/index'
 import ProjectAdd from './components/ProjectAdd.vue'
 import { reactive, toRefs, onMounted } from 'vue'
+import { keyer } from '@/utils/index'
 export default {
   components: {
     Search, Pagination, ProjectAdd
@@ -63,6 +64,7 @@ export default {
       editingProjectInfo: {}
     })
     onMounted(() => {
+        console.log(keyer.key)
       getList()
     })
     const getList = () => {
