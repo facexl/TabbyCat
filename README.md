@@ -14,10 +14,14 @@
 [-] use less  
 [-] coding bread crumbs  
 [-] route checkout animate  
-[ ] user CRUD  
-[ ] project CRUD  
+[-] user CRUD  
+[-] project CRUD  
 [-] search component  
 []  api auth  
 []  refactor all code to componsition  
 
 ## backend RoadMap  
+
+## Committing Changes
+
+Commit messages should follow the [commit message convention](https://github.com/vuejs/vue/blob/6aa11872c88481dfa2da151536317176c48f226c/.github/COMMIT_CONVENTION.md)
