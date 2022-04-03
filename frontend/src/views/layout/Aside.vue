@@ -4,10 +4,10 @@
         狸花猫
     </div>
     <el-menu class="el-menu" style="height:100vh" :default-openeds="defaultOpeneds">
-      <el-submenu v-for="(item,i) in filterRoutes" :index="String(i)" :key="item.name">
+      <el-sub-menu v-for="(item,i) in filterRoutes" :index="String(i)" :key="item.name">
         <template #title><i class="el-icon-message"></i>{{item.meta.title}}</template>
         <el-menu-item :class="{active:it.active}" @click="$router.push({name:it.name})" v-for="(it,oi) in item.children" :key="it.name" :index="`${i}-${oi}`">{{it.meta.title}}</el-menu-item>
-      </el-submenu>
+      </el-sub-menu>
     </el-menu>
   </el-aside>
 </template>
@@ -64,10 +64,10 @@ watch(
     position: fixed;
     top:0;
     left:0;
-    .el-submenu__title,.el-icon-message,.el-submenu__icon-arrow{
+    .el-sub-menu__title,.el-icon-message,.el-sub-menu__icon-arrow{
         color:#fff;
     }
-    .el-submenu__title:hover{
+    .el-sub-menu__title:hover{
         background-color: inherit;
     }
     .el-menu-item{
