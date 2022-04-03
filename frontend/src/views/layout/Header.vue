@@ -20,44 +20,34 @@
         </div>
     </el-header>
 </template>
-<script>
-import Router, { routes } from '@/router/index'
+<script setup lang="ts">
+import { routes } from '@/router/index'
 import { useStore } from 'vuex'
 import { local, session } from '@/utils/index'
-export default {
-  watch: {
-    $route: {
-      handler (v) {
-        routes.forEach((it, i) => {
-          it.children.forEach(item => {
+import { useRouter, useRoute } from 'vue-router'
+import { watch,ref } from 'vue'
+const router = useRouter()
+const route = useRoute()
+const father = ref()
+const child = ref()
+const store = useStore()
+const userInfo = store.getters['user/userInfo']
+watch(route,(v)=>{
+    routes.forEach((it: { children: any[]; meta: { title: string } }) => {
+        it.children.forEach(item => {
             if (item.name === v.name) {
-              this.father = it.meta.title
-              this.child = v.meta.title
+                father.value = it.meta.title
+                child.value = v.meta.title
             }
-          })
         })
-      },
-      immediate: true
-    }
-  },
-  data () {
-    return {
-      father: '',
-      child: ''
-    }
-  },
-  setup () {
-    const store = useStore()
-    const userInfo = store.getters['user/userInfo']
-    return {
-      userInfo
-    }
-  },
-  methods: {
-    userOperate (key) {
+    })
+},{
+    immediate:true
+})
+const userOperate = (key:string)=>{
       switch (key) {
         case 'edit':
-          this.$router.push({
+          router.push({
             name: 'userEdit'
           })
           break
@@ -69,8 +59,6 @@ export default {
         default:
           console.log('未定义操作')
       }
-    }
-  }
 }
 </script>
 <style lang="less" scoped>

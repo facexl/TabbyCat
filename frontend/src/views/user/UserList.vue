@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search :searchOPtions="searchOPtions" @searchCallback="onSearch"></Search>
+        <!-- <Search :searchOPtions="searchOPtions" @searchCallback="onSearch"></Search> -->
         <div class="app-table-header mb8">
             <el-button @click="addUser" type="primary" size="small">添加</el-button>
         </div>
@@ -36,21 +36,21 @@
           </el-table-column>
         </el-table>
         <div class="app-table-pager mt8">
-            <Pagination
+            <!-- <Pagination
                 :page="page"
                 :pageSize="pageSize"
                 :total="total"
                 @handleSizeChange="handleSizeChange"
                 @handleCurrentChange="handleCurrentChange"
-            />
+            /> -->
         </div>
         <UserAdd @fresh="getList" :userInfo="userInfo" v-model:show="showUserAdd"></UserAdd>
     </div>
 </template>
 <script>
-import Search from '@/components/Search.vue'
+// import Search from '@/components/Search.vue'
 import UserAdd from './UserAdd.vue'
-import Pagination from '@/components/Pagination.vue'
+// import Pagination from '@/components/Pagination.vue'
 import usePagination from '@/composables/usePagination'
 import useSearch from '@/composables/useSearch'
 import { reactive, toRefs, onMounted } from 'vue'
@@ -58,9 +58,9 @@ import $api from '@/api/index'
 import { keyer } from '@/utils/index'
 export default {
   components: {
-    Search,
+    // Search,
     UserAdd,
-    Pagination
+    // Pagination
   },
   setup () {
     const state = reactive({

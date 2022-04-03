@@ -13,42 +13,30 @@
         </el-container>
     </el-container>
 </template>
-<script>
+<script setup lang="ts">
 import Aside from '@/views/layout/Aside.vue'
 import Header from '@/views/layout/Header.vue'
-import { ref, reactive, toRefs, computed } from 'vue'
+import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { ElLoading } from 'element-plus'
-export default {
-  components: {
-    Aside,
-    Header
-  },
-  setup () {
-    // const store = useStore()
-    const state = reactive({
-      showApp: true
+    const store = useStore()
+    const showApp = ref(false)
+    const loading = ElLoading.service({
+      lock: true,
     })
-    // const loading = ElLoading.service({
-    //   lock: true,
-    //   text: 'Loading'
-    // })
-    // console.log('trigger app init setup')
-    // const userInfo = store.getters['user/userInfo']
-    // if (!userInfo.id) {
-    //   store.dispatch('user/getUserInfo').then(res => {
-    //     state.showApp = true
-    //     loading.close()
-    //   }).catch(err => {
-    //     console.log(err)
-    //     loading.close()
-    //   })
-    // }
-    return {
-      ...toRefs(state)
+    console.log('trigger app init setup')
+    const userInfo = store.getters['user/userInfo']
+    if (!userInfo.id) {
+      store.dispatch('user/getUserInfo').then(res => {
+        showApp.value = true
+        loading.close()
+      }).catch(err => {
+        console.log(err)
+        loading.close()
+      })
+    }else{
+        showApp.value = true
     }
-  }
-}
 </script>
 <style lang="less">
 .slide-fade-enter-active {
