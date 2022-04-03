@@ -32,18 +32,22 @@ const father = ref()
 const child = ref()
 const store = useStore()
 const userInfo = store.getters['user/userInfo']
-watch(route,(v)=>{
-    routes.forEach((it: { children: any[]; meta: { title: string } }) => {
-        it.children.forEach(item => {
-            if (item.name === v.name) {
-                father.value = it.meta.title
-                child.value = v.meta.title
-            }
+watch(
+    route,
+    (v)=>{
+        routes.forEach((it: { children: any[]; meta: { title: string } }) => {
+            it.children.forEach(item => {
+                if (item.name === v.name) {
+                    father.value = it.meta.title
+                    child.value = v.meta.title
+                }
+            })
         })
-    })
-},{
-    immediate:true
-})
+    },
+    {
+        immediate:true
+    }
+)
 const userOperate = (key:string)=>{
       switch (key) {
         case 'edit':

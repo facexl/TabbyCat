@@ -11,31 +11,16 @@
     </el-menu>
   </el-aside>
 </template>
-<script>
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
 import { routes } from '@/router/index'
+import { watch,ref,computed } from 'vue'
 import cloneDeep from 'lodash.clonedeep'
-export default {
-  watch: {
-    $route: {
-      handler (v) {
-        this.filterRoutes.forEach((it, i) => {
-          it.children.forEach(item => {
-            if (item.name === v.name) {
-              this.defaultOpeneds = [String(i)]
-              item.active = true
-            } else {
-              item.active = false
-            }
-          })
-        })
-      },
-      immediate: true
-    }
-  },
-  computed: {
-    filterRoutes () {
-      const newRoutes = cloneDeep(routes)
-      const filterRoutes = newRoutes.filter(it => !it.hidden)
+const route = useRoute()
+const defaultOpeneds = ref([])
+const filterRoutes = computed(() => {
+    const newRoutes = cloneDeep(routes)
+      const filterRoutes = newRoutes.filter((it) => !it.hidden)
       filterRoutes.forEach(it => {
         it.children = it.children.filter(item => {
           item.active = false
@@ -43,14 +28,25 @@ export default {
         })
       })
       return filterRoutes
+})
+watch(
+    route,
+    (v)=>{
+        filterRoutes.value.forEach((it, i) => {
+          it.children.forEach(item => {
+            if (item.name === v.name) {
+              defaultOpeneds.value = [String(i)]
+              item.active = true
+            } else {
+              item.active = false
+            }
+          })
+        })
+    },
+    {
+        immediate:true
     }
-  },
-  data () {
-    return {
-      defaultOpeneds: []
-    }
-  }
-}
+)
 </script>
 <style lang="less" scoped>
 .el-aside,.el-menu{
