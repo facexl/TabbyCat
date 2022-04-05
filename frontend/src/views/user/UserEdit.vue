@@ -20,20 +20,19 @@
         </el-row>
     </div>
 </template>
-<script>
+<script setup>
 import { ref, toRefs, watch, reactive, onMounted } from 'vue'
+import { simpleRule } from '@/constant/common'
 import $api from '@/api/index'
-export default {
-  setup () {
     const root = ref(null)
     const state = reactive({
       form: {
         name: '',
         oldPassword: '',
         newPassword: ''
-      },
-      simpleRule: { required: true, message: '必填项', trigger: 'change' }
+      }
     })
+    const { form } = toRefs(state)
     const submit = () => {
       root.value.validate(val => {
         if (val) {
@@ -43,11 +42,4 @@ export default {
         }
       })
     }
-    return {
-      ...toRefs(state),
-      submit,
-      root
-    }
-  }
-}
 </script>

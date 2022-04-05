@@ -1,0 +1,1 @@
+export const simpleRule = { required: true, message: '必填项', trigger: 'change' }

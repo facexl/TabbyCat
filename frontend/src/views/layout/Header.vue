@@ -7,8 +7,11 @@
             </el-breadcrumb>
         </div>
         <div class="right">
-            <el-dropdown @command="userOperate">
-                <i class="el-icon-setting" style="margin-right: 15px"></i>
+            <span class="name">{{userInfo.name}}</span>
+            <el-dropdown @command="userOperate" style="vertical-align: bottom;">
+                <el-icon class="el-icon--right flex">
+                    <ArrowDown />
+                </el-icon>
                 <template #dropdown>
                 <el-dropdown-menu>
                     <el-dropdown-item command="edit">编辑</el-dropdown-item>
@@ -16,7 +19,6 @@
                 </el-dropdown-menu>
                 </template>
             </el-dropdown>
-            <span class="name">{{userInfo.name}}</span>
         </div>
     </el-header>
 </template>
