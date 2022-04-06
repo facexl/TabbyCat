@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search :searchOPtions="searchOPtions" @searchCallback="onSearch"></Search>
+        <Search :searchOptions="searchOptions" @searchCallback="onSearch"></Search>
         <el-table
           element-loading-spinner="el-icon-loading"
           :highlight-current-row="true"
@@ -43,7 +43,7 @@ export default {
   },
   setup () {
     const state = reactive({
-      searchOPtions: [{ type: 'input', key: 'key' }],
+      searchOptions: [{ type: 'input', key: 'key' }],
       loading: false,
       tableData: [],
       total: 0

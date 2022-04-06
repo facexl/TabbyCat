@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search :searchOPtions="searchOPtions" @searchCallback="onSearch"></Search>
+        <Search :searchOptions="searchOptions" @searchCallback="onSearch"></Search>
         <div class="app-table-header mb8">
             <el-button @click="showProjectAdd = true;editingProjectInfo={}" type="primary" size="small">添加</el-button>
         </div>
@@ -56,7 +56,7 @@ export default {
   },
   setup () {
     const state = reactive({
-      searchOPtions: [{ type: 'input', key: 'key' }],
+      searchOptions: [{ type: 'input', key: 'key' }],
       loading: false,
       tableData: [],
       total: 0,

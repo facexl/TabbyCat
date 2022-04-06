@@ -21,7 +21,7 @@
     </div>
 </template>
 <script setup>
-import { ref, toRefs, watch, reactive, onMounted } from 'vue'
+import { ref, toRefs, reactive } from 'vue'
 import { simpleRule } from '@/constant/common'
 import $api from '@/api/index'
     const root = ref(null)

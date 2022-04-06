@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- <Search :searchOPtions="searchOPtions" @searchCallback="onSearch"></Search> -->
+        <Search :searchOptions="searchOptions" @searchCallback="onSearch"></Search>
         <div class="app-table-header mb8">
             <el-button @click="addUser" type="primary" size="small">添加</el-button>
         </div>
@@ -48,7 +48,7 @@
     </div>
 </template>
 <script>
-// import Search from '@/components/Search.vue'
+import Search from '@/components/Search.vue'
 import UserAdd from './UserAdd.vue'
 // import Pagination from '@/components/Pagination.vue'
 import usePagination from '@/composables/usePagination'
@@ -58,13 +58,21 @@ import $api from '@/api/index'
 import { keyer } from '@/utils/index'
 export default {
   components: {
-    // Search,
+    Search,
     UserAdd,
     // Pagination
   },
   setup () {
     const state = reactive({
-      searchOPtions: [{ type: 'input', key: 'key' }],
+      searchOptions: [
+          { type: 'input', key: 'key' },
+          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
+          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
+          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
+          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
+          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
+          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
+      ],
       loading: false,
       tableData: [],
       showUserAdd: false,
