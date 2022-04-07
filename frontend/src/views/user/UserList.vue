@@ -1,16 +1,16 @@
 <template>
     <div>
-        <Search :searchOptions="searchOptions" @searchCallback="onSearch"></Search>
+        <Search :searchOptions="state.searchOptions" @onSearch="onSearch"></Search>
         <div class="app-table-header mb8">
-            <el-button @click="addUser" type="primary" size="small">添加</el-button>
+            <el-button @click="addUser" type="primary">添加</el-button>
         </div>
         <el-table
           element-loading-spinner="el-icon-loading"
           :highlight-current-row="true"
-          v-loading="loading"
+          v-loading="state.loading"
           border
           ref="multipleTable"
-          :data="tableData"
+          :data="state.tableData"
           tooltip-effect="dark"
           style="width: 100%"
         >
@@ -36,111 +36,90 @@
           </el-table-column>
         </el-table>
         <div class="app-table-pager mt8">
-            <!-- <Pagination
+            <Pagination
                 :page="page"
                 :pageSize="pageSize"
                 :total="total"
                 @handleSizeChange="handleSizeChange"
                 @handleCurrentChange="handleCurrentChange"
-            /> -->
+            />
         </div>
-        <UserAdd @fresh="getList" :userInfo="userInfo" v-model:show="showUserAdd"></UserAdd>
+        <!-- <UserAdd @fresh="getList" :userInfo="state.userInfo" v-model:show="state.showUserAdd"></UserAdd> -->
     </div>
 </template>
-<script>
+<script setup>
 import Search from '@/components/Search.vue'
 import UserAdd from './UserAdd.vue'
-// import Pagination from '@/components/Pagination.vue'
-import usePagination from '@/composables/usePagination'
+import Pagination from '@/components/Pagination.vue'
 import useSearch from '@/composables/useSearch'
-import { reactive, toRefs, onMounted } from 'vue'
+import { onMounted,ref } from 'vue'
 import $api from '@/api/index'
-import { keyer } from '@/utils/index'
-export default {
-  components: {
-    Search,
-    UserAdd,
-    // Pagination
-  },
-  setup () {
-    const state = reactive({
-      searchOptions: [
-          { type: 'input', key: 'key' },
-          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
-          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
-          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
-          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
-          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
-          { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
-      ],
-      loading: false,
-      tableData: [],
-      showUserAdd: false,
-      total: 0,
-      userInfo: {},
-    })
-    onMounted(() => {
-        console.log(keyer.key)
-      getList()
-    })
-    const getList = () => {
-      state.loading = true
-      $api.user.list({
+const state = ref({
+    searchOptions: [
+        { type: 'input', key: 'key',placeholder:'姓名' },
+        { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
+    ],
+    loading: false,
+    tableData: [],
+    showUserAdd: false,
+    userInfo: {},
+})
+onMounted(() => {
+    getList()
+})
+const getList = () => {
+    state.value.loading = true
+    $api.user.list({
         page: page.value,
         pageSize: pageSize.value,
         ...query.value
-      }).then(res => {
-        state.loading = false
-        state.tableData = res.data.list
-        state.total = res.data.count
-      }).catch((err) => {
+    }).then(res => {
+        state.value.loading = false
+        state.value.tableData = res.data.list
+        total.value = res.data.count
+    }).catch((err) => {
         console.error(err)
-        state.loading = false
-      })
-    }
-    const { page, pageSize, handleSizeChange, handleCurrentChange } = usePagination(getList)
-    const { onSearch, query } = useSearch(getList)
-    const addUser = () => {
-      state.showUserAdd = true
-      state.userInfo = {}
-    }
-    const statusChange = (row) => {
-      if (row.id) {
+        state.value.loading = false
+    })
+}
+const {
+    onSearch,
+    handleSizeChange,
+    handleCurrentChange,
+    query,
+    page,
+    pageSize,
+    total
+} = useSearch(getList)
+
+const statusChange = (row) => {
+    if (row.id) {
         $api.user.setStatus({
-          id: row.id,
-          status: row.status
+            id: row.id,
+            status: row.status
         }, { success: true }).catch(err => {
-          console.log(err)
-          row.status = row.status === 0 ? 10 : 0
+            console.log(err)
+            row.status = row.status === 0 ? 10 : 0
         })
-      }
     }
-    const edit = (row) => {
-      state.showUserAdd = true
-      state.userInfo = row
-    }
-    const del = id => {
-      $api.user.setStatus({
+}
+const addUser = () => {
+    state.value.showUserAdd = true
+    state.value.userInfo = {}
+}
+const edit = (row) => {
+    state.value.showUserAdd = true
+    state.value.userInfo = row
+}
+const del = id => {
+    $api.user.setStatus({
         id,
         status: 999
-      }, { success: true }).then(() => {
+    }, { success: true }).then(() => {
         getList()
-      })
-    }
-    return {
-      ...toRefs(state),
-      page,
-      pageSize,
-      handleSizeChange,
-      handleCurrentChange,
-      onSearch,
-      query,
-      getList,
-      addUser,
-      statusChange,
-      del,
-      edit
-    }
-  }
+    })
 }
+
+
 </script>
+

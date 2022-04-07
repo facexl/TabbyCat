@@ -6,12 +6,12 @@ import 'normalize.css/normalize.css'
 import '@/styles/index.less'
 import router from './router'
 import store from './store'
-import $api from '@/api/index'
+// import $api from '@/api/index'
 import * as elIcons from '@element-plus/icons-vue'
 
 const app = createApp(App)
 
-console.log($api)
+// console.log($api)
 
 app.use(store).use(router).use(ElementPlus).mount('#app');
 
@@ -24,4 +24,4 @@ Object.values(elIcons).forEach(it=>{
 })
 
 
-app.config.globalProperties.$api = $api
+// app.config.globalProperties.$api = $api

@@ -1,9 +1,9 @@
 <template>
     <div>
         <el-row type="flex" class="flex-no-warp">
-            <div class="left">
-                <el-form class="flex flex-wrap" ref="searchFormRef" style="width:100%" :model="searchForm">
-                    <div class="mr8" v-for="item in searchOptions" :key="item.key">
+            <div ref="leftRef" class="left" :class="{isOpen:isOpen}">
+                <el-form class="flex flex-wrap" ref="searchRef" style="width:100%" :model="searchForm">
+                    <div class="mr8 left-item" v-for="item in searchOptions" :key="item.key">
                         <el-form-item
                             :label="item.label"
                             :prop="item.key"
@@ -36,7 +36,7 @@
                     </div>
                 </el-form>
             </div>
-            <div class="right flex flex-no-wrap">
+            <div class="right flex flex-no-wrap flex-no-shink">
             <el-button
                 ref="searchButton"
                 type="primary"
@@ -49,27 +49,67 @@
                 @click="reset">
                 重置
             </el-button>
+            <span
+              class="ml8 mr8 open-tag"
+              type="text"
+              size="small"
+              @click="isOpen=!isOpen"
+              v-if="showOpenTrigger"
+            >
+              {{isOpen?'收起':'展开'}}
+              <el-icon class="receive-icon" :class="{'open-icon':isOpen}"><arrow-down /></el-icon>
+            </span>
+            <slot></slot>
             </div>
         </el-row>
     </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref,watch,nextTick } from 'vue'
 
 const props = defineProps({
     searchOptions:Array
 })
+const emit = defineEmits(['onSearch'])
 const searchForm = ref({});
+
+const leftRef = ref()
+
+const searchRef = ref()
+
+const isOpen = ref(false)
+
+// 是否展示开关  
+const showOpenTrigger = ref(false)
 
 props.searchOptions.forEach(it => {
     searchForm.value[it.key] = it.defaultValue
 });
 
-const onSearch = ()=>{
 
+const calculateOptionsLength = async ()=>{
+    await nextTick()
+    const nodeList = leftRef.value.querySelectorAll('.left-item')
+    // 存在第二行
+    if(nodeList[nodeList.length-1].offsetTop){
+        showOpenTrigger.value = true
+    }
+}
+
+watch(()=>props.searchOptions,()=>{
+    calculateOptionsLength()
+},{
+    immediate:true,
+    deep:true
+})
+
+
+const onSearch = ()=>{
+    emit('onSearch',{...searchForm.value})
 }
 const reset = ()=>{
-    
+    searchRef.value && searchRef.value.resetFields()
+    emit('onSearch',{})
 }
 
 </script>
@@ -77,5 +117,26 @@ const reset = ()=>{
 <style lang="less" scoped>
 .left{
     max-width:70%;
+    height:50px;
+    overflow: hidden;
+}
+.isOpen{
+    height:auto;
+    overflow: visible;
+}
+.right{
+    width:30%;
+}
+.receive-icon{
+    transition: all .3s;
+}
+.open-icon{
+    transform: rotate(180deg);
+}
+.open-tag{
+    font-size: 12px;
+    cursor: pointer;
+    color:#1890ff;
+    line-height: 32px;
 }
 </style>

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import $api from '@/api'
+import $api from '@/api/index'
 export default function () {
   const roles = ref([])
   const setRoles = async () => {
