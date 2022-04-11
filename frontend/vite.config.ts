@@ -1,10 +1,18 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+// import AutoImport from 'unplugin-auto-import/vite'
+import defineReactive from './defineReactive'
 const path = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+      defineReactive(),
+      vue(),
+    //   AutoImport({
+    //     imports: ['vue', '@vueuse/core'],
+    //   })
+  ],
   base:'/',
   resolve:{
     alias:{

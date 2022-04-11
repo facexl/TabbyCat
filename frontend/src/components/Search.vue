@@ -88,7 +88,6 @@ props.searchOptions.forEach(it => {
 
 
 const calculateOptionsLength = async ()=>{
-    await nextTick()
     const nodeList = leftRef.value.querySelectorAll('.left-item')
     // 存在第二行
     if(nodeList[nodeList.length-1].offsetTop){
@@ -96,8 +95,14 @@ const calculateOptionsLength = async ()=>{
     }
 }
 
-watch(()=>props.searchOptions,()=>{
-    calculateOptionsLength()
+watch(()=>props.searchOptions,async ()=>{
+    await nextTick()
+    if(leftRef.value){
+        calculateOptionsLength()
+    }else{
+        await nextTick()
+        calculateOptionsLength()
+    }
 },{
     immediate:true,
     deep:true

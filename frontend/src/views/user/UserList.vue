@@ -52,7 +52,7 @@ import Search from '@/components/Search.vue'
 import UserAdd from './UserAdd.vue'
 import Pagination from '@/components/Pagination.vue'
 import useSearch from '@/composables/useSearch'
-import { onMounted,ref } from 'vue'
+import { onMounted,ref,reactive,toRefs } from 'vue'
 import $api from '@/api/index'
 const state = ref({
     searchOptions: [
