@@ -8,7 +8,7 @@ import router from './router'
 import store from './store'
 import $api from '@/api/index'
 import * as elIcons from '@element-plus/icons-vue'
-
+import '../defineReactive'
 const app = createApp(App)
 
 // console.log($api)

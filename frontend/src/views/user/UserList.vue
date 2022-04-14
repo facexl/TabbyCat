@@ -1,16 +1,16 @@
 <template>
     <div>
-        <Search :searchOptions="state.searchOptions" @onSearch="onSearch"></Search>
+        <Search :searchOptions="searchOptions" @onSearch="onSearch"></Search>
         <div class="app-table-header mb8">
             <el-button @click="addUser" type="primary">添加</el-button>
         </div>
         <el-table
           element-loading-spinner="el-icon-loading"
           :highlight-current-row="true"
-          v-loading="state.loading"
+          v-loading="loading"
           border
           ref="multipleTable"
-          :data="state.tableData"
+          :data="tableData"
           tooltip-effect="dark"
           style="width: 100%"
         >
@@ -44,7 +44,7 @@
                 @handleCurrentChange="handleCurrentChange"
             />
         </div>
-        <!-- <UserAdd @fresh="getList" :userInfo="state.userInfo" v-model:show="state.showUserAdd"></UserAdd> -->
+        <!-- <UserAdd @fresh="getList" :userInfo="userInfo" v-model:show="showUserAdd"></UserAdd> -->
     </div>
 </template>
 <script setup>
@@ -52,9 +52,8 @@ import Search from '@/components/Search.vue'
 import UserAdd from './UserAdd.vue'
 import Pagination from '@/components/Pagination.vue'
 import useSearch from '@/composables/useSearch'
-import { onMounted,ref,reactive,toRefs } from 'vue'
 import $api from '@/api/index'
-const state = ref({
+const state = defineReactive({
     searchOptions: [
         { type: 'input', key: 'key',placeholder:'姓名' },
         { type: 'select', key: 'type',options:[{label:'name',value:1},{label:'name2',value:2}] },
@@ -68,18 +67,18 @@ onMounted(() => {
     getList()
 })
 const getList = () => {
-    state.value.loading = true
+    state.loading = true
     $api.user.list({
         page: page.value,
         pageSize: pageSize.value,
         ...query.value
     }).then(res => {
-        state.value.loading = false
-        state.value.tableData = res.data.list
+        state.loading = false
+        state.tableData = res.data.list
         total.value = res.data.count
     }).catch((err) => {
         console.error(err)
-        state.value.loading = false
+        state.loading = false
     })
 }
 const {
@@ -104,12 +103,12 @@ const statusChange = (row) => {
     }
 }
 const addUser = () => {
-    state.value.showUserAdd = true
-    state.value.userInfo = {}
+    state.showUserAdd = true
+    state.userInfo = {}
 }
 const edit = (row) => {
-    state.value.showUserAdd = true
-    state.value.userInfo = row
+    state.showUserAdd = true
+    state.userInfo = row
 }
 const del = id => {
     $api.user.setStatus({
