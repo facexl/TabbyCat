@@ -30,7 +30,7 @@ export default function defineReactiveVitePlugin(userOptions) {
 function compileFileToJS(src,options){
     if(!src.includes(DEFINE_REACTIVE))return
 
-    const log = function(){
+    const log = function(a,b){
         options.debug && console.log(...arguments)
     }
 
@@ -80,9 +80,6 @@ function compileFileToJS(src,options){
             throw new Error(`${DEFINE_REACTIVE} 参数必须是对象字面量`)
         }
         const targetArgumentsProperties = targetArguments[0].properties
-        if(targetArgumentsProperties.length===0){
-            throw new Error(`${DEFINE_REACTIVE} 参数不能是空对象`)
-        }
         if(targetArgumentsProperties.find(it=>it.key.type!=='Identifier')){
             throw new Error(`${DEFINE_REACTIVE} 参数对象的 key 异常`)
         }
@@ -94,9 +91,7 @@ function compileFileToJS(src,options){
             newIdentifier,
             target,
             argumentsKeys,
-            finallyStr:needIdentifier?
-            `\n const ${JSON.stringify(argumentsKeys).replace(/\[/,'{').replace(/\]/,'}').replace(/\"/g,'')} = toRefs(${newIdentifier})\n`:
-            `\n const ${JSON.stringify(argumentsKeys).replace(/\[/,'{').replace(/\]/,'}').replace(/\"/g,'')} = toRefs(${target.declarations[0].id.name})\n`
+            finallyStr:targetArgumentsProperties.length?`\n const ${JSON.stringify(argumentsKeys).replace(/\[/,'{').replace(/\]/,'}').replace(/\"/g,'')} = toRefs(${needIdentifier?newIdentifier:target.declarations[0].id.name})\n`:''
         }
     })
 

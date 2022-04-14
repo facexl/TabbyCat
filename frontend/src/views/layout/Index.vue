@@ -20,7 +20,9 @@ import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { ElLoading } from 'element-plus'
     const store = useStore()
-    const showApp = ref(false)
+    const state = defineReactive({
+        showApp:false
+    })
     const loading = ElLoading.service({
       lock: true,
     })
@@ -28,14 +30,14 @@ import { ElLoading } from 'element-plus'
     const userInfo = store.getters['user/userInfo']
     if (!userInfo.id) {
       store.dispatch('user/getUserInfo').then(res => {
-        showApp.value = true
+        state.showApp = true
         loading.close()
       }).catch(err => {
         console.log(err)
         loading.close()
       })
     }else{
-        showApp.value = true
+        state.showApp = true
     }
 </script>
 <style lang="less">
