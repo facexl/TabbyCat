@@ -1,6 +1,6 @@
 declare global {
-    const defineReactive:(obj:{
+    const defineReactive:<T extends {
         [key:string]:any
-    })=>typeof import('vue')['reactive']
+    }>(obj:T)=>T
 }
 export {}

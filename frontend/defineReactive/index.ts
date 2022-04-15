@@ -1,16 +1,26 @@
 
 
 import { parse,babelParse } from 'vue/compiler-sfc'
-import { str,str2 } from './testStr'
+// import { str } from './testStr'
 
 const fileRegex = /\.vue$/
 
 // Special compiler macros
 const DEFINE_REACTIVE = 'defineReactive'
 
-export default function defineReactiveVitePlugin(userOptions) {
+const default_imports = ['toRefs','reactive']
+
+const default_var_name = 'auto_identifier__v_'
+
+interface userOptions{
+    debug?:Boolean,
+    needImport?:Boolean
+}
+
+export default function defineReactiveVitePlugin(userOptions:userOptions) {
   const options = {
       debug:false,
+      needImport:true,
       ...userOptions
   }
   return {
@@ -25,18 +35,22 @@ export default function defineReactiveVitePlugin(userOptions) {
   }
 }
 
-// compileFileToJS(str2,{debug:true})
+// compileFileToJS(str,{
+//     needImport:true,
+//     debug:true
+// })
 
-function compileFileToJS(src,options){
+function compileFileToJS(src:string,options:userOptions):string{
+
     if(!src.includes(DEFINE_REACTIVE))return
 
-    const log = function(a,b){
-        options.debug && console.log(...arguments)
+    const log = function(a:any,b?:any){
+        options.debug && console.log(...arguments as any)
     }
 
     const { descriptor } = parse(src)
 
-    // log('vue/compiler-sfc parse 之后',descriptor)
+    log('vue/compiler-sfc parse 之后',descriptor)
 
     let { scriptSetup } = descriptor
 
@@ -53,7 +67,7 @@ function compileFileToJS(src,options){
 
     log('babelParse 转换的 ast',scriptAst)
 
-    const nodeBody = scriptAst.body
+    const nodeBody = scriptAst.body as any
 
     const targets = nodeBody.filter(it=>{
         return it.type==='VariableDeclaration' && it.declarations.length===1 && it.declarations[0].type==="VariableDeclarator" && it.declarations[0].init.type==="CallExpression" && it.declarations[0].init.callee.name===DEFINE_REACTIVE||
@@ -85,7 +99,7 @@ function compileFileToJS(src,options){
         }
         // defineReactive 参数内部 key
         const argumentsKeys = targetArgumentsProperties.map(it=>it.key.name) 
-        const newIdentifier = `auto_identifier__v_${target.start}`
+        const newIdentifier = `${default_var_name}${target.start}`
         return {
             needIdentifier,
             newIdentifier,
@@ -107,6 +121,7 @@ function compileFileToJS(src,options){
     }
 
     // 顶层变量
+    // 这个应该不准确  
     const allVariableDeclaration = nodeBody.filter(it=>it.type==='VariableDeclaration').reduce((a,b)=>{
         if(b.declarations[0].id.type==='Identifier'){
             a.push(b.declarations[0].id.name)
@@ -133,28 +148,66 @@ function compileFileToJS(src,options){
         }
         finallyScript = finallyScript + it.finallyStr
     })
+
     const reg = new RegExp(DEFINE_REACTIVE,'g')
+
     finallyScript = finallyScript.replace(reg,'reactive') 
-    log(
-        '转换结果:',
-        ['template','script','scriptSetup']
-            .filter(it=>descriptor[it])
-            .map(it=>revertTopTags(descriptor[it],it==='scriptSetup'?finallyScript:false))
-            .concat(descriptor.styles.map(it=>revertTopTags(it)))
-            .sort((a,b)=>a.offset-b.offset)
-            .map(it=>it.content)
-            .join('\n')
-    )
-    return ['template','script','scriptSetup']
-            .filter(it=>descriptor[it])
-            .map(it=>revertTopTags(descriptor[it],it==='scriptSetup'?finallyScript:false))
-            .concat(descriptor['styles'].map(it=>revertTopTags(it)))
-            .sort((a,b)=>a.offset-b.offset)
-            .map(it=>it.content)
-            .join('\n')
+
+    // 拼接 import 
+    if(options.needImport){
+        const identifiers = nodeBody.filter(it=>it.type==='ImportDeclaration').reduce((a,b)=>{
+            a = a.concat(
+                b.specifiers.map(item=>item.local.name)
+            )
+            return a
+        },[])
+        log('all imports identifiers',identifiers)
+        let resImportStr = ''
+        default_imports.forEach(it=>{
+            if(!identifiers.includes(it)){
+                if(resImportStr){
+                    resImportStr = resImportStr + `,${it}`
+                }else{
+                    resImportStr = it
+                }
+            }
+        })
+        if(resImportStr){
+            finallyScript = `\n import { ${resImportStr} } from 'vue' \n ${finallyScript}`
+        }
+    }
+
+    const result = ['template','script','scriptSetup']
+                    .filter(it=>descriptor[it])
+                    .map(it=>revertTopTags(descriptor[it],it==='scriptSetup'?finallyScript:''))
+                    .concat(descriptor['styles'].map(it=>revertTopTags(it)))
+                    .sort((a,b)=>(+a.offset) - (+b.offset))
+                    .map(it=>it.content)
+                    .join('\n')
+
+    log('转换结果:',result)
+
+    return result
 }
 
-function revertTopTags(obj,content){
+function revertTopTags(
+    obj:{
+        attrs:{
+            [key:string]:string | Boolean
+        },
+        type:string,
+        content:string,
+        loc:{
+            start:{
+                offset:Number
+            }
+        }
+    },
+    content?:string
+):{
+    content:string,
+    offset:Number
+}{
     const res = Object.keys(obj.attrs).reduce((a,b)=>{
         const str = obj.attrs[b]===true?` ${b}`:` ${b}="${obj.attrs[b]}"`
         a = a + str
