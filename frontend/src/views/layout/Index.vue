@@ -1,5 +1,5 @@
 <template>
-    <el-container v-if="state.showApp" style="min-height: 100vh;padding-left:200px">
+    <el-container v-if="showApp" style="min-height: 100vh;padding-left:200px">
         <Aside />
         <el-container direction="vertical">
             <Header />
@@ -13,7 +13,7 @@
         </el-container>
     </el-container>
 </template>
-<script setup>
+<script setup lang="ts">
 import Aside from '@/views/layout/Aside.vue'
 import Header from '@/views/layout/Header.vue'
 import { useStore } from 'vuex'

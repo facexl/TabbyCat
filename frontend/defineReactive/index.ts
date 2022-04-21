@@ -1,12 +1,13 @@
 
 
 import { parse,babelParse } from 'vue/compiler-sfc'
-// import { str } from './testStr'
+import { astParse } from './parse'
+import type { Plugin } from 'vite'
 
 const fileRegex = /\.vue$/
 
 // Special compiler macros
-const DEFINE_REACTIVE = 'defineReactive'
+export const DEFINE_REACTIVE = 'defineReactive'
 
 const default_imports = ['toRefs','reactive']
 
@@ -17,7 +18,7 @@ interface userOptions{
     needImport?:Boolean
 }
 
-export default function defineReactiveVitePlugin(userOptions:userOptions) {
+export default function defineReactiveVitePlugin(userOptions:userOptions):Plugin {
   const options = {
       debug:false,
       needImport:true,
@@ -25,22 +26,18 @@ export default function defineReactiveVitePlugin(userOptions:userOptions) {
   }
   return {
     name: DEFINE_REACTIVE,
-    transform(src, id) {
+    transform(src, id):any {
       if (fileRegex.test(id)) {
         return {
-          code: compileFileToJS(src,options),
+          code: transformDefineReactiveMacro(src,options),
         }
       }
     }
   }
 }
 
-// compileFileToJS(str,{
-//     needImport:true,
-//     debug:true
-// })
 
-function compileFileToJS(src:string,options:userOptions):string{
+export const transformDefineReactiveMacro = function(src:string,options:userOptions):string | void{
 
     if(!src.includes(DEFINE_REACTIVE))return
 
@@ -50,93 +47,59 @@ function compileFileToJS(src:string,options:userOptions):string{
 
     const { descriptor } = parse(src)
 
-    log('vue/compiler-sfc parse 之后',descriptor)
+    log('after vue/compiler-sfc parse:',descriptor)
 
     let { scriptSetup } = descriptor
 
     if(!scriptSetup){
-        throw new Error(`${DEFINE_REACTIVE} 只能用于script setup`)
+        throw new Error(`${DEFINE_REACTIVE} only use in script setup`)
     }
 
     let content = scriptSetup.content
 
+    const plugins:Array<string> = []
+
+    if(scriptSetup.attrs.lang==='ts'){
+        plugins.push('typescript', 'decorators-legacy')
+    }
+
     const scriptAst = babelParse(content, {
-        plugins:[],
+        plugins:plugins as any,
         sourceType: 'module'
     }).program
 
-    log('babelParse 转换的 ast',scriptAst)
+    log('after babelParse ast',scriptAst)
 
     const nodeBody = scriptAst.body as any
 
-    const targets = nodeBody.filter(it=>{
-        return it.type==='VariableDeclaration' && it.declarations.length===1 && it.declarations[0].type==="VariableDeclarator" && it.declarations[0].init.type==="CallExpression" && it.declarations[0].init.callee.name===DEFINE_REACTIVE||
-        it.type==='ExpressionStatement' && it.expression && it.expression.callee.name===DEFINE_REACTIVE
-    })
+    const targets = astParse(nodeBody)
 
     if(!targets.length){
-        log('ast 没有命中')
+        log('ast hit nothing')
         return
     }
 
     const resTargets = targets.map(target=>{
         const needIdentifier = target.type==='ExpressionStatement'
-        let targetArguments = [];
-        if(needIdentifier){
-            targetArguments = target.expression.arguments
-        }else{
-            targetArguments = target.declarations[0].init.arguments
-        }
-        if(targetArguments.length!==1){
-            throw new Error(`${DEFINE_REACTIVE} 有且仅有一个参数`)
-        }
-        if(targetArguments[0].type!=="ObjectExpression"){
-            throw new Error(`${DEFINE_REACTIVE} 参数必须是对象字面量`)
-        }
-        const targetArgumentsProperties = targetArguments[0].properties
-        if(targetArgumentsProperties.find(it=>it.key.type!=='Identifier')){
-            throw new Error(`${DEFINE_REACTIVE} 参数对象的 key 异常`)
-        }
-        // defineReactive 参数内部 key
-        const argumentsKeys = targetArgumentsProperties.map(it=>it.key.name) 
-        const newIdentifier = `${default_var_name}${target.start}`
+        const newIdentifier = `${default_var_name}${target.source.start}`
         return {
             needIdentifier,
             newIdentifier,
-            target,
-            argumentsKeys,
-            finallyStr:targetArgumentsProperties.length?`\n const ${JSON.stringify(argumentsKeys).replace(/\[/,'{').replace(/\]/,'}').replace(/\"/g,'')} = toRefs(${needIdentifier?newIdentifier:target.declarations[0].id.name})\n`:''
+            source:target.source,
+            args:target.args,
+            finallyStr:`\n const ${JSON.stringify(target.args).replace(/\[/,'{').replace(/\]/,'}').replace(/\"/g,'')} = toRefs(${needIdentifier?newIdentifier:target.id})\n`
         }
-    })
+    }) as any
 
-    log('待处理对象 resTargets',resTargets)
+    log('resTargets',resTargets)
 
-    const combinResTargets = resTargets.reduce((a,b)=>{
-        a = a.concat(b.argumentsKeys)
+    const combinResTargets:Array<string> = resTargets.reduce((a,b)=>{
+        a = a.concat(b.args)
         return a
     },[])
 
     if([...new Set(combinResTargets)].length!==combinResTargets.length){
-        throw new Error(`多个${DEFINE_REACTIVE}参数对象使用了相同的key`)
-    }
-
-    // 顶层变量
-    // 这个应该不准确  
-    const allVariableDeclaration = nodeBody.filter(it=>it.type==='VariableDeclaration').reduce((a,b)=>{
-        if(b.declarations[0].id.type==='Identifier'){
-            a.push(b.declarations[0].id.name)
-        }
-        if(b.declarations[0].id.type==='ObjectPattern'){
-            a = a.concat(b.declarations[0].id.properties.map(it=>it.value.name))
-        }
-        return a
-    },[])
-
-    // 变量声明检查
-    for(let i=0;i<allVariableDeclaration.length;i++){
-        if(combinResTargets.includes(allVariableDeclaration[i])){
-            throw new Error(`顶层变量 ${allVariableDeclaration[i]} 和 ${DEFINE_REACTIVE} 参数对象的 key: ${allVariableDeclaration[i]} 冲突 Duplicate`)
-        }
+        throw new Error(`${DEFINE_REACTIVE} args use duplicate key,${combinResTargets}`)
     }
 
     let finallyScript = scriptSetup.content
@@ -144,7 +107,7 @@ function compileFileToJS(src:string,options:userOptions):string{
     // 倒序为了从后面修改字符串 避免影响到 ast 坐标  
     resTargets.reverse().forEach(it=>{
         if(it.needIdentifier){
-            finallyScript = finallyScript.substring(0,it.target.start)+`\n const ${it.newIdentifier}=`+finallyScript.substring(it.target.start,finallyScript.length)
+            finallyScript = finallyScript.substring(0,it.source.start)+`\n const ${it.newIdentifier}=`+finallyScript.substring(it.source.start,finallyScript.length)
         }
         finallyScript = finallyScript + it.finallyStr
     })
@@ -181,11 +144,12 @@ function compileFileToJS(src:string,options:userOptions):string{
                     .filter(it=>descriptor[it])
                     .map(it=>revertTopTags(descriptor[it],it==='scriptSetup'?finallyScript:''))
                     .concat(descriptor['styles'].map(it=>revertTopTags(it)))
+                    .concat(descriptor['customBlocks'].map(it=>revertTopTags(it)))
                     .sort((a,b)=>(+a.offset) - (+b.offset))
                     .map(it=>it.content)
                     .join('\n')
 
-    log('转换结果:',result)
+    log('transform result:',result)
 
     return result
 }
@@ -218,3 +182,4 @@ function revertTopTags(
         offset:obj.loc.start.offset
     }
 }
+
