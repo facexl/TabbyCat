@@ -1,5 +1,5 @@
 <template>
-  <div class="app-login-container">
+  <div class="app-login-container flex-center">
     <el-form
       :model="loginForm"
       :rules="loginRules"
@@ -12,15 +12,11 @@
         狸花猫
       </h3>
       <el-form-item prop="name">
-        <span class="svg-container svg-container_login">
-            <i class="el-icon-user-solid"></i>
-        </span>
+        <el-icon class="svg-container flex-center"><user-filled /></el-icon>
         <el-input name="username" type="text" v-model="loginForm.name" placeholder="请输入用户名称" />
       </el-form-item>
       <el-form-item prop="password">
-        <span class="svg-container svg-container_login">
-            <i class="el-icon-lock"></i>
-        </span>
+        <el-icon class="svg-container flex-center"><lock /></el-icon>
         <el-input
           name="password"
           type="password"
@@ -34,6 +30,7 @@
           type="primary"
           style="width:100%;"
           :loading="loading"
+          size="large"
           @click.prevent="handleLogin"
         >登 录</el-button>
       </el-form-item>
@@ -106,9 +103,6 @@ const handleLogin =()=> {
   position: fixed;
   height: 100%;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   input {
     background: transparent;
     border: 0;
@@ -124,21 +118,15 @@ const handleLogin =()=> {
   }
   .el-input {
     display: inline-block;
-    vertical-align: -2px;
-    width: 85%;
+    flex:1;
+    .el-input__inner{
+        box-shadow:none;
+    }
   }
   .svg-container {
-    padding: 6px 5px 6px 15px;
+    padding-left:15px;
     color:  #889aa4;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-    &_login {
-      font-size: 20px;
-    }
-    svg {
-      font-size: 15px;
-    }
+    font-size: 18px;
   }
   .title {
     font-size: 24px;
