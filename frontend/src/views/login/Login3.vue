@@ -3,7 +3,7 @@
     <el-form
       :model="loginForm"
       :rules="loginRules"
-      ref="root"
+      ref="loginForm"
       label-position="left"
       label-width="0px"
       class="card-box login-form"
@@ -41,29 +41,26 @@
   </div>
 </template>
 
-<script setup>
+<script>
+// import { mapActions } from "vuex";
 import { local } from '@/utils'
-import { ref } from 'vue'
-import $api from '@/api/index'
-import { useRouter,useRoute } from 'vue-router'
-const root = ref(null)
-const router = useRouter()
-const route = useRoute()
-const validatename = (rule, value, callback) => {
-    if (!value) {
-    callback(new Error('请输入用户名'))
-    return
+export default {
+  data () {
+    const validatename = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入用户名'))
+        return
+      }
+      callback()
     }
-    callback()
-}
-const validatePass = (rule, value, callback) => {
-    if (value.length < 6) {
-    callback(new Error('密码不能小于6位'))
-    return
+    const validatePass = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('密码不能小于6位'))
+        return
+      }
+      callback()
     }
-    callback()
-}
-const state = defineReactive({
+    return {
       loginForm: {
         name: '',
         password: ''
@@ -75,29 +72,32 @@ const state = defineReactive({
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false
-})
-const handleLogin =()=> {
-      root.value.validate(valid => {
+    }
+  },
+  methods: {
+    handleLogin () {
+      this.$refs.loginForm.validate(valid => {
         if (valid) {
-          state.loading = true
-          $api.user.login(state.loginForm).then(res => {
+          this.loading = true
+          this.$api.user.login(this.loginForm).then(res => {
             local.set('_t', res.data.token)
-            if (route.query.redirect) {
-              router.push({
-                path: route.query.redirect
+            if (this.$route.query.redirect) {
+              this.$router.push({
+                path: this.$route.query.redirect
               })
             } else {
-              router.push({
+              this.$router.push({
                 name: 'workspace'
               })
             }
-          }).catch(err => {
-              console.log(err)
-            state.loading = false
+          }).catch(() => {
+            this.loading = false
           })
         }
       })
     }
+  }
+}
 </script>
 
 <style lang="less" type="text/less">

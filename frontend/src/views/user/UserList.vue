@@ -44,7 +44,7 @@
                 @handleCurrentChange="handleCurrentChange"
             />
         </div>
-        <!-- <UserAdd @fresh="getList" :userInfo="userInfo" v-model:show="showUserAdd"></UserAdd> -->
+        <UserAdd @fresh="getList" :userInfo="userInfo" v-model:show="showUserAdd"></UserAdd>
     </div>
 </template>
 <script setup>
