@@ -61,7 +61,9 @@ const state = defineReactive({
     loading: false,
     tableData: [],
     showUserAdd: false,
-    userInfo: {},
+    userInfo: {
+        a:1
+    },
 })
 onMounted(() => {
     getList()
@@ -121,4 +123,3 @@ const del = id => {
 
 
 </script>
-

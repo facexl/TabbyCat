@@ -1,9 +1,9 @@
 <template>
-  <div class="app-login-container flex-center">
+  <div class="app-login-container">
     <el-form
       :model="loginForm"
       :rules="loginRules"
-      ref="root"
+      ref="loginForm"
       label-position="left"
       label-width="0px"
       class="card-box login-form"
@@ -12,11 +12,15 @@
         狸花猫
       </h3>
       <el-form-item prop="name">
-        <el-icon class="svg-container flex-center"><user-filled /></el-icon>
+        <span class="svg-container svg-container_login">
+            <i class="el-icon-user-solid"></i>
+        </span>
         <el-input name="username" type="text" v-model="loginForm.name" placeholder="请输入用户名称" />
       </el-form-item>
       <el-form-item prop="password">
-        <el-icon class="svg-container flex-center"><lock /></el-icon>
+        <span class="svg-container svg-container_login">
+            <i class="el-icon-lock"></i>
+        </span>
         <el-input
           name="password"
           type="password"
@@ -30,7 +34,6 @@
           type="primary"
           style="width:100%;"
           :loading="loading"
-          size="large"
           @click.prevent="handleLogin"
         >登 录</el-button>
       </el-form-item>
@@ -38,29 +41,26 @@
   </div>
 </template>
 
-<script setup>
+<script>
+// import { mapActions } from "vuex";
 import { local } from '@/utils'
-import { ref } from 'vue'
-import $api from '@/api/index'
-import { useRouter,useRoute } from 'vue-router'
-const root = ref(null)
-const router = useRouter()
-const route = useRoute()
-const validatename = (rule, value, callback) => {
-    if (!value) {
-    callback(new Error('请输入用户名'))
-    return
+export default {
+  data () {
+    const validatename = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入用户名'))
+        return
+      }
+      callback()
     }
-    callback()
-}
-const validatePass = (rule, value, callback) => {
-    if (value.length < 6) {
-    callback(new Error('密码不能小于6位'))
-    return
+    const validatePass = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('密码不能小于6位'))
+        return
+      }
+      callback()
     }
-    callback()
-}
-const state = defineReactive({
+    return {
       loginForm: {
         name: '',
         password: ''
@@ -72,29 +72,32 @@ const state = defineReactive({
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false
-})
-const handleLogin =()=> {
-      root.value.validate(valid => {
+    }
+  },
+  methods: {
+    handleLogin () {
+      this.$refs.loginForm.validate(valid => {
         if (valid) {
-          state.loading = true
-          $api.user.login(state.loginForm).then(res => {
+          this.loading = true
+          this.$api.user.login(this.loginForm).then(res => {
             local.set('_t', res.data.token)
-            if (route.query.redirect) {
-              router.push({
-                path: route.query.redirect
+            if (this.$route.query.redirect) {
+              this.$router.push({
+                path: this.$route.query.redirect
               })
             } else {
-              router.push({
+              this.$router.push({
                 name: 'workspace'
               })
             }
-          }).catch(err => {
-              console.log(err)
-            state.loading = false
+          }).catch(() => {
+            this.loading = false
           })
         }
       })
     }
+  }
+}
 </script>
 
 <style lang="less" type="text/less">
@@ -103,6 +106,9 @@ const handleLogin =()=> {
   position: fixed;
   height: 100%;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   input {
     background: transparent;
     border: 0;
@@ -118,15 +124,21 @@ const handleLogin =()=> {
   }
   .el-input {
     display: inline-block;
-    flex:1;
-    .el-input__inner{
-        box-shadow:none;
-    }
+    vertical-align: -2px;
+    width: 85%;
   }
   .svg-container {
-    padding-left:15px;
+    padding: 6px 5px 6px 15px;
     color:  #889aa4;
-    font-size: 18px;
+    vertical-align: middle;
+    width: 30px;
+    display: inline-block;
+    &_login {
+      font-size: 20px;
+    }
+    svg {
+      font-size: 15px;
+    }
   }
   .title {
     font-size: 24px;
@@ -134,11 +146,6 @@ const handleLogin =()=> {
     margin: 0 auto 40px auto;
     text-align: center;
     font-weight: bold;
-    text-transform: uppercase;
-    color: #1890ff;
-    background-image: -webkit-gradient(linear,37.219838% 34.532506%,36.425669% 93.178216%,from(#29cdff),to(#0a60ff),color-stop(.37,#148eff));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     img {
       width: 70px;
       vertical-align: -4px;

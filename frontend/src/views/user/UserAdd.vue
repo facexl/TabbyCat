@@ -1,5 +1,5 @@
 <template>
-    <el-dialog
+    <!-- <el-dialog
         title="添加用户"
         v-model="dialogVisible"
         width="30%"
@@ -27,27 +27,25 @@
             <el-button type="primary" @click="submit">确 定</el-button>
             </span>
         </template>
-    </el-dialog>
+    </el-dialog> -->
 </template>
-<script>
-import useRoles from '@/composables/constant/useRoles'
+<script setup>
+import useRoles from '@/composables/constant/useRoles.ts'
 import { reactive, toRefs, onMounted, ref, watch, nextTick } from 'vue'
 import $api from '@/api/index'
 
-export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
-    userInfo: {}
-  },
-  emits: ['fresh'],
-  setup (props, { emit }) {
-    const root = ref(null)
-    const { roles, setRoles } = useRoles()
-    setRoles()
-    const validatePass = (rule, value, callback) => {
+const props = defineProps({
+    show:Boolean,
+    userInfo:{}
+})
+       
+const emit = defineEmits(['fresh'])
+const root = ref(null)
+const { roles, setRoles } = useRoles()
+
+setRoles()
+
+const validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
       } else if (value !== state.form.password) {
@@ -55,65 +53,152 @@ export default {
       } else {
         callback()
       }
-    }
-    const state = reactive({
-      dialogVisible: false,
-      isEdit: false,
-      form: {
-        role: '',
-        name: '',
-        password: '',
-        sure_password: ''
-      },
-      simpleRule: { required: true, message: '必填项', trigger: 'change' },
-      surePasswordRule: { required: true, validator: validatePass, trigger: 'blur' }
-    })
-    watch(() => props.show, v => {
-      state.dialogVisible = v
-    })
-    watch(() => state.dialogVisible, v => {
-      emit('update:show', v)
-    })
-    watch(() => props.userInfo, async v => {
-      if (v.id) {
-        await nextTick()
-        Object.keys(state.form).forEach(key => {
-          state.form[key] = v[key]
-        })
-        state.isEdit = true
-      } else {
-        root.value && root.value.resetFields()
-        state.isEdit = false
-      }
-    })
-    const handleClose = () => {
-      state.dialogVisible = false
-    }
-    const submit = () => {
-      root.value.validate(val => {
-        console.log(val)
-        if (!val) return
-        state.isEdit
-          ? $api.user.update({
-            ...state.form,
-            id: props.userInfo.id
-          }).then(res => {
-            state.dialogVisible = false
-            emit('fresh')
-          })
-          : $api.user.signIn(state.form).then(res => {
-            state.dialogVisible = false
-            emit('fresh')
-          })
-      })
-    }
-    return {
-      ...toRefs(state),
-      roles,
-      handleClose,
-      submit,
-      root
-    }
-  }
 }
+
+// const state = defineReactive({
+//     dialogVisible: false,
+//     isEdit: false,
+//     form: {
+//         role: '',
+//         name: '',
+//         password: '',
+//         sure_password: ''
+//     },
+//     simpleRule: { required: true, message: '必填项', trigger: 'change' },
+//     surePasswordRule: { required: true, validator: validatePass, trigger: 'blur' }
+// })
+
+// watch(() => props.show, v => {
+//       state.dialogVisible = v
+// })
+
+// watch(() => state.dialogVisible, v => {
+//     emit('update:show', v)
+// })
+
+// watch(() => props.userInfo, async v => {
+//     if (v.id) {
+//     await nextTick()
+//     Object.keys(state.form).forEach(key => {
+//         state.form[key] = v[key]
+//     })
+//     state.isEdit = true
+//     } else {
+//     root.value && root.value.resetFields()
+//     state.isEdit = false
+//     }
+// })
+
+const handleClose = () => {
+    state.dialogVisible = false
+}
+
+const submit = () => {
+    root.value.validate(val => {
+    console.log(val)
+    if (!val) return
+    state.isEdit
+        ? $api.user.update({
+        ...state.form,
+        id: props.userInfo.id
+        }).then(res => {
+        state.dialogVisible = false
+            emit('fresh')
+        })
+        : $api.user.signIn(state.form).then(res => {
+        state.dialogVisible = false
+            emit('fresh')
+        })
+    })
+}
+
 </script>
+
+ <script>
+// import useRoles from '@/composables/constant/useRoles'
+// import { reactive, toRefs, onMounted, ref, watch, nextTick } from 'vue'
+// import $api from '@/api/index'
+
+// export default {
+//   props: {
+//     show: {
+//       type: Boolean,
+//       default: false
+//     },
+//     userInfo: {}
+//   },
+//   emits: ['fresh'],
+//   setup (props, { emit }) {
+//     const root = ref(null)
+//     const { roles, setRoles } = useRoles()
+//     setRoles()
+//     const validatePass = (rule, value, callback) => {
+//       if (value === '') {
+//         callback(new Error('请再次输入密码'))
+//       } else if (value !== state.form.password) {
+//         callback(new Error('两次输入密码不一致!'))
+//       } else {
+//         callback()
+//       }
+//     }
+//     const state = reactive({
+//       dialogVisible: false,
+//       isEdit: false,
+//       form: {
+//         role: '',
+//         name: '',
+//         password: '',
+//         sure_password: ''
+//       },
+//       simpleRule: { required: true, message: '必填项', trigger: 'change' },
+//       surePasswordRule: { required: true, validator: validatePass, trigger: 'blur' }
+//     })
+//     watch(() => props.show, v => {
+//       state.dialogVisible = v
+//     })
+//     watch(() => state.dialogVisible, v => {
+//       emit('update:show', v)
+//     })
+//     watch(() => props.userInfo, async v => {
+//       if (v.id) {
+//         await nextTick()
+//         Object.keys(state.form).forEach(key => {
+//           state.form[key] = v[key]
+//         })
+//         state.isEdit = true
+//       } else {
+//         root.value && root.value.resetFields()
+//         state.isEdit = false
+//       }
+//     })
+//     const handleClose = () => {
+//       state.dialogVisible = false
+//     }
+//     const submit = () => {
+//       root.value.validate(val => {
+//         console.log(val)
+//         if (!val) return
+//         state.isEdit
+//           ? $api.user.update({
+//             ...state.form,
+//             id: props.userInfo.id
+//           }).then(res => {
+//             state.dialogVisible = false
+//             emit('fresh')
+//           })
+//           : $api.user.signIn(state.form).then(res => {
+//             state.dialogVisible = false
+//             emit('fresh')
+//           })
+//       })
+//     }
+//     return {
+//       ...toRefs(state),
+//       roles,
+//       handleClose,
+//       submit,
+//       root
+//     }
+//   }
+// }
+ </script>

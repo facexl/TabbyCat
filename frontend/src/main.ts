@@ -6,12 +6,10 @@ import 'normalize.css/normalize.css'
 import '@/styles/index.less'
 import router from './router'
 import store from './store'
-import $api from '@/api/index'
 import * as elIcons from '@element-plus/icons-vue'
+// import { transformDefineReactiveMacro } from '../defineReactive'
 
 const app = createApp(App)
-
-// console.log($api)
 
 app.use(store).use(router).use(ElementPlus).mount('#app');
 
@@ -23,5 +21,15 @@ Object.values(elIcons).forEach(it=>{
     )
 })
 
+// const content = transformDefineReactiveMacro(`
+// <script setup>
+//     const state = defineReactive({
+//         showApp:false,
+//         loading:false
+//     })
+// </script>
+// `,{
+//     needImport:true
+// })
 
-app.config.globalProperties.$api = $api
+// console.log(content)
